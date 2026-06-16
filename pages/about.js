@@ -67,9 +67,13 @@ export default function About() {
                   To use the picture you provided, please save it as "profile.jpg" in the "public" folder and change the src below to "/profile.jpg"
                 */}
                 <img 
-                  src={user?.avatar || "https://via.placeholder.com/300x300?text=Your+Photo"} 
+                  src="/profile.jpg" 
                   alt="Ajith Kumar" 
                   className="w-full h-full object-cover bg-slate-100"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://ui-avatars.com/api/?name=Ajith+Kumar&size=300&background=random";
+                  }}
                 />
               </div>
             </div>
