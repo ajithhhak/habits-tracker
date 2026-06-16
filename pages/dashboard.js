@@ -7,10 +7,10 @@ import { Flame, CheckCircle2, CalendarDays, Star, Loader2, TrendingUp } from 'lu
 
 function StatCard({ icon: Icon, label, value, sub, color = 'brand' }) {
   const colors = {
-    brand:  'from-brand-400 to-brand-600 text-brand-600 dark:text-brand-400 shadow-brand-500/20',
-    orange: 'from-orange-400 to-orange-600 text-orange-600 dark:text-orange-400 shadow-orange-500/20',
-    purple: 'from-purple-400 to-purple-600 text-purple-600 dark:text-purple-400 shadow-purple-500/20',
-    green:  'from-green-400 to-green-600 text-green-600 dark:text-green-400 shadow-green-500/20',
+    brand:  'from-brand-500 to-accent-500 text-brand-300 shadow-[0_0_20px_rgba(20,241,217,0.3)]',
+    orange: 'from-[#ff7a00] to-[#ff0040] text-[#ff7a00] shadow-[0_0_20px_rgba(255,122,0,0.3)]',
+    purple: 'from-accent-500 to-[#6a00ff] text-accent-400 shadow-[0_0_20px_rgba(191,0,255,0.3)]',
+    green:  'from-[#00ff87] to-[#60efff] text-[#00ff87] shadow-[0_0_20px_rgba(0,255,135,0.3)]',
   }
   const cls = colors[color] || colors.brand
   const [gradFrom, gradTo, text, shadow] = cls.split(' ')
@@ -18,18 +18,21 @@ function StatCard({ icon: Icon, label, value, sub, color = 'brand' }) {
   return (
     <motion.div 
       variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-      className="card bg-white/60 dark:bg-surface-900/60 backdrop-blur-md hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 group border border-white/40 dark:border-surface-700/50"
+      whileHover={{ y: -8, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="glass rounded-3xl p-6 relative overflow-hidden group cursor-pointer transition-all duration-300"
     >
-      <div className="flex items-center gap-5">
-        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradFrom} ${gradTo} p-[1.5px] shadow-lg ${shadow} flex-shrink-0 group-hover:scale-105 group-hover:rotate-3 transition-transform duration-300`}>
-          <div className="w-full h-full bg-white/90 dark:bg-surface-900/90 rounded-[14px] flex items-center justify-center backdrop-blur-sm">
-             <Icon className={text} size={26} strokeWidth={2.5} />
+      <div className={`absolute top-[-50%] right-[-50%] w-full h-full bg-gradient-to-br ${gradFrom} ${gradTo} opacity-0 group-hover:opacity-10 blur-3xl transition-opacity duration-500 rounded-full pointer-events-none`} />
+      <div className="flex items-center gap-5 relative z-10">
+        <div className={`w-16 h-16 rounded-[1.25rem] bg-gradient-to-br ${gradFrom} ${gradTo} p-[2px] shadow-lg ${shadow} flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}>
+          <div className="w-full h-full bg-surface-950/80 rounded-[1.15rem] flex items-center justify-center backdrop-blur-md">
+             <Icon className={text} size={28} strokeWidth={2.5} />
           </div>
         </div>
         <div>
-          <div className="text-3xl font-extrabold text-surface-900 dark:text-white tracking-tight">{value}</div>
-          <div className="text-sm font-bold text-surface-500 dark:text-surface-400 mt-0.5">{label}</div>
-          {sub && <div className="text-xs font-medium text-surface-400 dark:text-surface-500 mt-1">{sub}</div>}
+          <div className="text-4xl font-extrabold text-white tracking-tighter drop-shadow-md">{value}</div>
+          <div className="text-sm font-bold text-surface-400 mt-1 tracking-wide uppercase">{label}</div>
+          {sub && <div className="text-xs font-semibold text-surface-500 mt-1.5">{sub}</div>}
         </div>
       </div>
     </motion.div>
@@ -65,11 +68,16 @@ export default function Dashboard() {
     <Layout user={user}>
       <motion.div variants={containerVars} initial="hidden" animate="show" className="space-y-8 max-w-7xl mx-auto">
         {/* Header */}
-        <motion.div variants={{ hidden: { opacity: 0, x: -20 }, show: { opacity: 1, x: 0 } }}>
-          <h1 className="text-3xl font-extrabold text-surface-900 dark:text-white tracking-tight">
-            Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-teal-400">{user?.name?.split(' ')[0]}</span> 👋
+        <motion.div variants={{ hidden: { opacity: 0, x: -20 }, show: { opacity: 1, x: 0 } }} className="relative z-10">
+          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tighter drop-shadow-lg">
+            Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, <br className="md:hidden" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-brand-300 to-accent-400 animate-pulse-slow">
+              {user?.name?.split(' ')[0]}
+            </span> 👋
           </h1>
-          <p className="text-surface-500 dark:text-surface-400 text-base font-medium mt-1.5">Here's how your habits are looking today.</p>
+          <p className="text-surface-400 text-lg font-medium mt-3 max-w-xl">
+            Welcome back to your personalized space. Here is your habit performance overview.
+          </p>
         </motion.div>
 
         {/* Stat cards */}
@@ -81,14 +89,15 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Smart Insights */}
-        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="card bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 backdrop-blur-md border border-indigo-100 dark:border-indigo-800/30">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white dark:bg-surface-800 shadow-sm flex items-center justify-center flex-shrink-0 text-indigo-500">
-              <Star size={24} className="fill-indigo-500/20" />
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="glass rounded-[2rem] border-brand-500/20 shadow-[0_0_30px_rgba(20,241,217,0.1)] relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 via-transparent to-accent-500/10 pointer-events-none" />
+          <div className="flex items-start gap-5 p-6 relative z-10">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500/20 to-accent-500/20 flex items-center justify-center flex-shrink-0 border border-brand-500/30 shadow-[0_0_15px_rgba(20,241,217,0.3)]">
+              <Star size={28} className="text-brand-400" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-200 mb-1">Smart Insights</h3>
-              <p className="text-sm font-medium text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed">
+              <h3 className="text-xl font-bold text-white mb-2 tracking-wide">Smart Insights</h3>
+              <p className="text-base font-medium text-surface-300 leading-relaxed max-w-3xl">
                 {stats?.todayPct === 100 
                   ? "Incredible work! You've crushed all your habits today. Keep this momentum going!"
                   : stats?.user?.streak >= 3
@@ -104,13 +113,13 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Chart */}
-        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="card bg-white/60 dark:bg-surface-900/60 backdrop-blur-md border border-white/40 dark:border-surface-700/50">
-          <div className="flex items-center justify-between mb-8">
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="glass rounded-[2rem] p-6 relative overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
             <div>
-              <h2 className="text-xl font-bold text-surface-900 dark:text-white flex items-center gap-2">
-                <TrendingUp className="text-brand-500" size={24} /> Daily Completion Rate
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3 tracking-wide">
+                <TrendingUp className="text-brand-400 drop-shadow-[0_0_8px_rgba(20,241,217,0.8)]" size={28} /> Daily Completion Rate
               </h2>
-              <p className="text-sm font-medium text-surface-500 dark:text-surface-400 mt-1">Performance over the last 30 days</p>
+              <p className="text-sm font-semibold text-surface-400 mt-1 uppercase tracking-wider">Performance over the last 30 days</p>
             </div>
           </div>
           {stats?.chartData ? (
@@ -146,30 +155,30 @@ export default function Dashboard() {
 
         {/* Habit stats table */}
         {stats?.habitStats?.length > 0 && (
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="card bg-white/60 dark:bg-surface-900/60 backdrop-blur-md border border-white/40 dark:border-surface-700/50">
-            <h2 className="text-xl font-bold text-surface-900 dark:text-white mb-6">Habit Performance</h2>
-            <div className="space-y-4">
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="glass rounded-[2rem] p-6 relative overflow-hidden">
+            <h2 className="text-2xl font-bold text-white mb-8 tracking-wide">Habit Performance</h2>
+            <div className="space-y-5 relative z-10">
               {stats.habitStats.map(h => (
-                <div key={h.id} className="flex items-center gap-4 group p-3 rounded-2xl hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200">
-                  <span className="text-2xl w-10 h-10 flex items-center justify-center bg-white dark:bg-surface-800 shadow-sm rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">{h.icon}</span>
+                <div key={h.id} className="flex items-center gap-5 group p-4 rounded-2xl bg-surface-900/50 hover:bg-surface-800/80 border border-white/5 transition-all duration-300">
+                  <span className="text-3xl w-14 h-14 flex items-center justify-center bg-surface-950/80 border border-surface-700/50 shadow-[0_0_15px_rgba(0,0,0,0.5)] rounded-2xl flex-shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">{h.icon}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-sm font-bold text-surface-700 dark:text-surface-200 truncate">{h.name}</span>
-                      <span className="text-sm font-black text-surface-900 dark:text-white ml-2 flex-shrink-0">{h.rate}%</span>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-base font-bold text-white tracking-wide truncate">{h.name}</span>
+                      <span className="text-base font-black text-brand-400 drop-shadow-[0_0_5px_rgba(20,241,217,0.8)] ml-2 flex-shrink-0">{h.rate}%</span>
                     </div>
-                    <div className="h-2.5 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden shadow-inner">
+                    <div className="h-3 bg-surface-950 rounded-full overflow-hidden shadow-inner border border-white/5">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${h.rate}%` }}
-                        transition={{ duration: 1, ease: "easeOut" }}
+                        transition={{ duration: 1.5, ease: "circOut" }}
                         className="h-full rounded-full relative overflow-hidden"
-                        style={{ backgroundColor: h.color || '#14b8a6' }}
+                        style={{ backgroundColor: h.color || '#14f1d9', boxShadow: `0 0 10px ${h.color || '#14f1d9'}` }}
                       >
-                        <div className="absolute inset-0 bg-white/20 w-full h-full -translate-x-full animate-[shimmer_2s_infinite]" />
+                        <div className="absolute inset-0 bg-white/30 w-full h-full -translate-x-full animate-[shimmer_2s_infinite]" />
                       </motion.div>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-surface-400 flex-shrink-0 w-20 text-right bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded-lg">{h.completedDays}/30 days</span>
+                  <span className="text-xs font-bold text-surface-400 flex-shrink-0 w-24 text-right bg-surface-950/80 px-3 py-1.5 rounded-xl border border-white/5">{h.completedDays}/30 days</span>
                 </div>
               ))}
             </div>

@@ -23,25 +23,26 @@ export default function Layout({ children, user, onUserUpdate }) {
   }
 
   return (
-    <div className="flex h-screen bg-surface-50 dark:bg-surface-950 overflow-hidden font-sans text-surface-900 dark:text-surface-50 transition-colors duration-300">
+    <div className="flex h-screen bg-transparent overflow-hidden font-sans text-surface-50 transition-colors duration-300">
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-r border-surface-200 dark:border-surface-800 shadow-2xl
-                         transform transition-transform duration-300 ease-out
+      <aside className={`fixed inset-y-0 left-0 z-50 w-72 glass border-r-0 border-white/10
+                         transform transition-transform duration-300 ease-out shadow-[10px_0_30px_rgba(0,0,0,0.5)]
                          md:relative md:translate-x-0
                          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Logo */}
-        <div className="p-6 border-b border-surface-100 dark:border-surface-800/50 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-brand-400 to-brand-600 rounded-xl
-                            flex items-center justify-center shadow-lg shadow-brand-500/30">
-              <span className="text-white font-black text-xl">✦</span>
+        <div className="p-6 border-b border-white/5 flex justify-between items-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-500/10 to-accent-500/10 pointer-events-none" />
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="w-10 h-10 bg-gradient-to-br from-brand-500 to-accent-500 rounded-2xl
+                            flex items-center justify-center shadow-[0_0_15px_rgba(20,241,217,0.5)]">
+              <span className="text-surface-950 font-black text-xl">✦</span>
             </div>
             <div>
-              <div className="font-extrabold text-lg tracking-tight">HabitFlow</div>
-              <div className="text-xs text-surface-500 dark:text-surface-400 font-medium">Daily tracker</div>
+              <div className="font-extrabold text-xl tracking-tight text-white drop-shadow-md">HabitFlow</div>
+              <div className="text-xs text-brand-400 font-bold uppercase tracking-wider">Neon Aurora</div>
             </div>
           </div>
-          <button className="md:hidden text-surface-500 hover:text-surface-900 dark:hover:text-surface-50 transition-colors" onClick={() => setSidebarOpen(false)}>
+          <button className="md:hidden text-surface-400 hover:text-white transition-colors relative z-10" onClick={() => setSidebarOpen(false)}>
             <X size={20} />
           </button>
         </div>
@@ -69,7 +70,7 @@ export default function Layout({ children, user, onUserUpdate }) {
         )}
 
         {/* Nav */}
-        <nav className="p-4 space-y-2 mt-2 flex-1">
+        <nav className="p-4 space-y-2 mt-2 flex-1 relative z-10">
           {NAV.map(({ href, icon: Icon, label }) => {
             const active = router.pathname === href
             return (
@@ -77,15 +78,15 @@ export default function Layout({ children, user, onUserUpdate }) {
                 {active && (
                   <motion.div
                     layoutId="activeNavIndicator"
-                    className="absolute inset-0 bg-brand-50 dark:bg-brand-500/10 rounded-xl"
+                    className="absolute inset-0 bg-gradient-to-r from-brand-500/20 to-accent-500/20 border-l-4 border-brand-400 rounded-r-xl"
                     initial={false}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                   />
                 )}
-                <div className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200
+                <div className={`relative flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300
                               ${active
-                                ? 'text-brand-600 dark:text-brand-400'
-                                : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-50 hover:bg-surface-50 dark:hover:bg-surface-800/50'}`}>
+                                ? 'text-brand-400 drop-shadow-[0_0_8px_rgba(20,241,217,0.8)]'
+                                : 'text-surface-400 hover:text-white hover:bg-white/5'}`}>
                   <Icon size={20} className={active ? 'stroke-[2.5px]' : 'stroke-2'} />
                   {label}
                 </div>
@@ -115,20 +116,21 @@ export default function Layout({ children, user, onUserUpdate }) {
       </AnimatePresence>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden relative bg-surface-50 dark:bg-surface-950">
+      <div className="flex-1 flex flex-col overflow-hidden relative bg-transparent">
         
-        {/* Ambient background glows */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-400/20 dark:bg-brand-500/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-400/20 dark:bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none translate-y-1/4 -translate-x-1/4 z-0" />
+        {/* Animated Aurora Backgrounds */}
+        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-brand-500/20 rounded-full blur-[150px] pointer-events-none animate-aurora z-0" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[800px] h-[800px] bg-accent-500/10 rounded-full blur-[150px] pointer-events-none animate-pulse-slow z-0" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[40%] left-[20%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none animate-aurora z-0" style={{ animationDelay: '5s' }} />
 
         {/* Top bar */}
-        <header className="bg-white/70 dark:bg-surface-900/70 backdrop-blur-xl border-b border-surface-200 dark:border-surface-800 px-4 md:px-8 h-16 flex items-center justify-between flex-shrink-0 z-30 sticky top-0">
-          <button className="md:hidden p-2 -ml-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-600 dark:text-surface-300 transition-colors"
+        <header className="glass border-b-0 border-x-0 border-t-0 px-4 md:px-8 h-[72px] flex items-center justify-between flex-shrink-0 z-30 sticky top-0 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+          <button className="md:hidden p-2 -ml-2 rounded-xl hover:bg-white/10 text-white transition-colors"
                   onClick={() => setSidebarOpen(true)}>
             <Menu size={24} />
           </button>
           
-          <div className="text-sm font-medium text-surface-500 dark:text-surface-400 hidden md:block">
+          <div className="text-sm font-bold text-surface-300 hidden md:block tracking-wide uppercase">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
           

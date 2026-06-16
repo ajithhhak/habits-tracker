@@ -33,11 +33,19 @@ export default requireAuth(async function handler(req, res) {
     const { date, month } = req.query
     if (date) {
       const log = await HabitLog.findOne({ userId, date })
-      return res.status(200).json({ log: log || null })
+      if (!log) return res.status(200).json({ log: null })
+      const obj = log.toObject()
+      obj.ticks = log.ticks ? Object.fromEntries(log.ticks.entries()) : {}
+      return res.status(200).json({ log: obj })
     }
     if (month) {
       const logs = await HabitLog.find({ userId, date: { $regex: `^${month}` } })
-      return res.status(200).json({ logs })
+      const plainLogs = logs.map(l => {
+        const obj = l.toObject()
+        obj.ticks = l.ticks ? Object.fromEntries(l.ticks.entries()) : {}
+        return obj
+      })
+      return res.status(200).json({ logs: plainLogs })
     }
     return res.status(400).json({ error: 'Provide date or month' })
   }
@@ -67,7 +75,9 @@ export default requireAuth(async function handler(req, res) {
     await log.save()
     await updateStreak(userId)
 
-    return res.status(200).json({ log })
+    const obj = log.toObject()
+    obj.ticks = log.ticks ? Object.fromEntries(log.ticks.entries()) : {}
+    return res.status(200).json({ log: obj })
   }
 
   res.status(405).end()
