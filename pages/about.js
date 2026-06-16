@@ -159,29 +159,44 @@ export default function About() {
 
 function PieChart() {
   return (
-    <motion.div 
-      initial={{ rotate: -180, scale: 0.5, opacity: 0 }}
-      whileInView={{ rotate: 0, scale: 1, opacity: 1 }}
-      viewport={{ once: false, margin: "-50px" }}
-      transition={{ duration: 1.5, type: "spring", bounce: 0.4 }}
-      className="w-56 h-56 rounded-full shadow-2xl relative flex items-center justify-center"
-      style={{
-        background: `conic-gradient(
-          #111 0% 50%, 
-          #8b5cf6 50% 80%, 
-          #e2e8f0 80% 100%
-        )`
-      }}
-    >
-      {/* Tooltips or labels for the pie chart slices */}
-      <div className="absolute top-8 left-8 text-white text-xs font-bold">Hardware</div>
-      <div className="absolute bottom-8 right-12 text-white text-xs font-bold">Software</div>
-      <div className="absolute top-12 right-6 text-slate-800 text-xs font-bold">Robotics</div>
+    <div className="relative w-64 h-64 flex items-center justify-center">
+      {/* The rotating pie background */}
+      <motion.div 
+        initial={{ rotate: -180, scale: 0.5, opacity: 0 }}
+        whileInView={{ rotate: 0, scale: 1, opacity: 1 }}
+        viewport={{ once: false, margin: "-50px" }}
+        transition={{ duration: 1.5, type: "spring", bounce: 0.4 }}
+        className="absolute inset-0 rounded-full shadow-2xl"
+        style={{
+          background: `conic-gradient(
+            #111 0% 45%, 
+            #e2e8f0 45% 78%, 
+            #8b5cf6 78% 100%
+          )`
+        }}
+      />
+      
+      {/* Labels positioned precisely over their respective slices (non-rotating) */}
+      
+      {/* Hardware: 0% to 45% (Right side) */}
+      <div className="absolute top-1/2 right-6 -translate-y-1/2 text-white text-xs font-bold z-10 pointer-events-none text-right">
+        Hardware<br/><span className="font-normal opacity-80">44%</span>
+      </div>
+      
+      {/* Robotics: 45% to 78% (Bottom-Left side) */}
+      <div className="absolute bottom-10 left-12 text-slate-800 text-xs font-bold z-10 pointer-events-none">
+        Robotics<br/><span className="font-normal opacity-80">34%</span>
+      </div>
+
+      {/* Software: 78% to 100% (Top-Left side) */}
+      <div className="absolute top-10 left-12 text-white text-xs font-bold z-10 pointer-events-none">
+        Software<br/><span className="font-normal opacity-80">22%</span>
+      </div>
 
       {/* Inner circle for donut effect */}
-      <div className="bg-white w-28 h-28 rounded-full flex items-center justify-center shadow-inner z-10">
+      <div className="bg-white w-28 h-28 rounded-full flex items-center justify-center shadow-inner z-20 relative">
         <span className="font-bold text-slate-800 text-base">Skills</span>
       </div>
-    </motion.div>
+    </div>
   )
 }
