@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { User, Mail, Phone, Lock, ImagePlus, ArrowRight, AlertTriangle, Loader2 } from 'lucide-react'
+import { User, Mail, Phone, Lock, ImagePlus, ArrowRight, AlertTriangle, Loader2, Sparkles } from 'lucide-react'
 
 export default function Register() {
   const router = useRouter()
@@ -79,7 +79,12 @@ export default function Register() {
   })
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12 relative">
+    <div className="min-h-screen flex items-center justify-center p-4 py-12 relative overflow-hidden"
+         style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
+      {/* Decorative blobs */}
+      <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full opacity-30 blur-3xl" style={{ background: 'radial-gradient(circle, #c4b5fd, transparent 70%)' }} />
+      <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-25 blur-3xl" style={{ background: 'radial-gradient(circle, #f0abfc, transparent 70%)' }} />
+
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -87,29 +92,34 @@ export default function Register() {
         className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-sm mb-6">
-            <span className="text-white text-3xl font-black">✦</span>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-6"
+               style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
+            <Sparkles className="text-white" size={28} />
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create your account</h1>
+          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Create your account</h1>
           <p className="text-slate-500 mt-2 text-sm font-medium">Start your habit journey today</p>
         </div>
 
         {health && !health.ok && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 p-4 rounded-xl text-xs font-mono border bg-red-50/80 dark:bg-red-900/20 border-red-200 dark:border-red-800/50 text-red-800 dark:text-red-400 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 p-4 rounded-xl text-xs font-mono border bg-red-50 border-red-200 text-red-800">
             <div className="font-bold flex items-center gap-2">❌ API Error: {health.error}</div>
           </motion.div>
         )}
 
-        <div className="card">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/50 p-6">
           <div className="flex justify-center mb-8">
             <label className="cursor-pointer group relative">
-              <div className="w-24 h-24 rounded-full border border-slate-200 flex items-center justify-center bg-slate-50 overflow-hidden group-hover:border-indigo-500 transition-colors duration-300">
-                {avatarPreview
-                  ? <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
-                  : <div className="text-center text-slate-400 group-hover:text-indigo-500 transition-colors"><ImagePlus size={28} className="mx-auto" /></div>
-                }
+              <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform duration-300 p-0.5"
+                   style={{ background: 'linear-gradient(135deg, #8b5cf6, #d946ef, #f97316)' }}>
+                <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                  {avatarPreview
+                    ? <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
+                    : <div className="text-center text-violet-400 group-hover:text-violet-500 transition-colors"><ImagePlus size={28} className="mx-auto" /></div>
+                  }
+                </div>
               </div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center shadow-sm border-2 border-white group-hover:scale-110 transition-transform">
+              <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:scale-110 transition-transform"
+                   style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
                 <span className="text-white text-lg font-bold leading-none mb-0.5">+</span>
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
@@ -117,7 +127,7 @@ export default function Register() {
           </div>
 
           {error && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium flex items-start gap-3">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium flex items-start gap-3">
               <AlertTriangle className="flex-shrink-0 mt-0.5" size={18} />
               <span>{error}</span>
             </motion.div>
@@ -127,21 +137,21 @@ export default function Register() {
             <div>
               <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
                 <input className="input pl-11" type="text" placeholder="Priya Sharma" required {...field('name')} />
               </div>
             </div>
             <div>
               <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Email address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
                 <input className="input pl-11" type="email" placeholder="you@example.com" required {...field('email')} />
               </div>
             </div>
             <div>
               <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Phone Number</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
                 <input className="input pl-11" type="tel" placeholder="+91 98765 43210" required {...field('phone')} />
               </div>
             </div>
@@ -149,14 +159,14 @@ export default function Register() {
               <div>
                 <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
                   <input className="input pl-11" type="password" placeholder="Min 6" required {...field('password')} />
                 </div>
               </div>
               <div>
                 <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Confirm</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
                   <input className="input pl-11" type="password" placeholder="Repeat" required {...field('confirm')} />
                 </div>
               </div>
@@ -173,7 +183,7 @@ export default function Register() {
 
           <p className="text-center text-sm text-slate-500 mt-6">
             Already have an account?{' '}
-            <Link href="/login" className="text-indigo-600 font-semibold hover:underline">Sign in</Link>
+            <Link href="/login" className="font-semibold hover:underline" style={{ color: '#7c3aed' }}>Sign in</Link>
           </p>
         </div>
         <p className="text-center text-xs text-slate-400 mt-8 font-medium">🔒 Your data is securely encrypted</p>

@@ -1,57 +1,98 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body { 
-    @apply font-sans text-slate-900 antialiased selection:bg-indigo-500 selection:text-white bg-slate-50;
+    @apply font-sans text-slate-800 antialiased selection:bg-violet-500 selection:text-white;
+    background: #f8f7ff;
+    background-image: 
+      radial-gradient(at 20% 0%, hsla(262, 80%, 90%, 0.4) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsla(330, 80%, 92%, 0.3) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(220, 60%, 94%, 0.3) 0px, transparent 50%);
+    background-attachment: fixed;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg
-           transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-sm
-           active:scale-[0.98];
+    @apply text-white font-semibold px-6 py-2.5 rounded-xl
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 
+           active:scale-[0.97] shadow-lg;
+    background: linear-gradient(135deg, #7c3aed, #a855f7, #d946ef);
+    box-shadow: 0 4px 15px -3px rgba(139, 92, 246, 0.4);
   }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #6d28d9, #9333ea, #c026d3);
+    box-shadow: 0 6px 20px -3px rgba(139, 92, 246, 0.5);
+    transform: translateY(-1px);
+  }
+
   .btn-secondary {
-    @apply bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-2.5 rounded-lg
-           border border-slate-200 transition-colors duration-200
-           focus:outline-none focus:ring-2 focus:ring-slate-200 shadow-sm
-           active:scale-[0.98];
+    @apply bg-white hover:bg-violet-50 text-slate-700 font-semibold px-6 py-2.5 rounded-xl
+           border border-slate-200 transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-violet-200 shadow-sm
+           active:scale-[0.97] hover:border-violet-300;
   }
+
   .input {
-    @apply w-full px-4 py-2.5 rounded-lg border border-slate-200 
-           bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 
-           focus:border-indigo-500 text-slate-900
-           placeholder-slate-400 transition-colors duration-200 text-sm shadow-sm;
+    @apply w-full px-4 py-2.5 rounded-xl border border-slate-200 
+           bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-400 
+           focus:border-violet-400 text-slate-800
+           placeholder-slate-400 transition-all duration-200 text-sm shadow-sm;
   }
+  .input:focus {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1), 0 1px 2px rgba(0,0,0,0.05);
+  }
+
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-slate-200 p-6;
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-200/60 p-6;
+    transition: all 0.25s ease;
   }
+  .card:hover {
+    border-color: rgba(139, 92, 246, 0.15);
+    box-shadow: 0 4px 20px -5px rgba(139, 92, 246, 0.1), 0 1px 3px rgba(0,0,0,0.04);
+  }
+
   .glass {
-    @apply bg-white border border-slate-200 shadow-sm;
+    @apply bg-white/70 backdrop-blur-md border border-white/50 shadow-lg;
   }
 }
 
 /* Checkbox custom */
 input[type="checkbox"].habit-check {
   width: 20px; height: 20px; cursor: pointer;
-  accent-color: #0d9488;
+  accent-color: #8b5cf6;
   transition: all 0.2s ease-in-out;
 }
 input[type="checkbox"].habit-check:hover {
   transform: scale(1.1);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; height: 8px; }
+/* Fade-in animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* Shimmer effect for loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 7px; height: 7px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { 
-  @apply bg-surface-300 dark:bg-surface-700 rounded-full; 
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover { 
-  @apply bg-surface-400 dark:bg-surface-600; 
+  background: rgba(139, 92, 246, 0.35);
 }

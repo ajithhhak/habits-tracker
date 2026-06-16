@@ -149,8 +149,8 @@ export default function Tracker() {
   if (loading) {
     return (
       <Layout user={user}>
-        <div className="flex flex-col items-center justify-center h-[60vh] text-slate-500">
-          <Loader2 className="animate-spin mb-4 text-indigo-500" size={32} />
+        <div className="flex flex-col items-center justify-center h-[60vh] text-slate-400">
+          <Loader2 className="animate-spin mb-4 text-violet-500" size={32} />
           <p className="font-medium animate-pulse">Loading tracker...</p>
         </div>
       </Layout>
@@ -166,9 +166,11 @@ export default function Tracker() {
         {/* Month nav */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 flex items-center gap-3 tracking-tight">
-              <CheckSquare className="text-indigo-600" size={32} />
-              {format(currentDate, 'MMMM yyyy')}
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 flex items-center gap-3 tracking-tight">
+              <CheckSquare className="text-violet-500" size={32} />
+              <span style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                {format(currentDate, 'MMMM yyyy')}
+              </span>
             </h1>
             <p className="text-slate-500 font-semibold mt-1 uppercase tracking-wider text-xs">Click any cell to tick / untick a habit</p>
           </div>
@@ -185,9 +187,9 @@ export default function Tracker() {
             <div style={{ minWidth: `${224 + daysInMonth * 40}px` }}>
 
             {/* Summary strip */}
-            <div className="bg-slate-50 text-slate-900 border-b border-slate-200">
+            <div className="border-b border-violet-100" style={{ background: 'linear-gradient(90deg, #f5f3ff, #faf5ff)' }}>
               <div className="px-5 py-3 sticky left-0 w-max z-20">
-                <span className="text-xs font-bold tracking-widest uppercase flex items-center gap-2"><CheckSquare size={16} className="text-indigo-600" /> Daily Goals</span>
+                <span className="text-xs font-bold tracking-widest uppercase flex items-center gap-2"><CheckSquare size={16} className="text-violet-500" /> Daily Goals</span>
               </div>
             </div>
 
@@ -211,12 +213,12 @@ export default function Tracker() {
 
             {/* Week headers */}
             <div className="grid border-b border-slate-200" style={{ gridTemplateColumns: gridTemplate }}>
-              <div className="bg-slate-50 text-slate-500 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 flex items-center sticky left-0 z-20 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Goal</div>
+              <div className="text-violet-500 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 flex items-center sticky left-0 z-20 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" style={{ background: '#f5f3ff' }}>Goal</div>
               {weekGroups.map((wg, wi) => {
                 const span  = wg.end - wg.start + 1
                 return (
-                  <div key={wi} className="flex items-center justify-center py-2 text-xs font-bold uppercase tracking-wider border-r border-slate-200 bg-slate-50 text-indigo-600"
-                       style={{ gridColumn: `span ${span}` }}>
+                  <div key={wi} className="flex items-center justify-center py-2 text-xs font-bold uppercase tracking-wider border-r border-slate-200 text-violet-600"
+                       style={{ gridColumn: `span ${span}`, background: '#f5f3ff' }}>
                     Week {wi + 1}
                   </div>
                 )
@@ -243,7 +245,8 @@ export default function Tracker() {
                 const isToday = format(new Date(), 'yyyy-MM-dd') === `${monthKey}-${String(d).padStart(2,'0')}`
                 return (
                   <div key={d} className="flex items-center justify-center py-2 text-sm font-bold border-r border-slate-200 bg-white text-slate-900">
-                    <span className={isToday ? 'inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-600 text-white shadow-sm' : ''}>
+                    <span className={isToday ? 'inline-flex items-center justify-center w-7 h-7 rounded-full text-white shadow-lg' : ''}
+                          style={isToday ? { background: 'linear-gradient(135deg, #7c3aed, #d946ef)' } : undefined}>
                       {d}
                     </span>
                   </div>
@@ -269,15 +272,15 @@ export default function Tracker() {
                     const isSaving = saving[`${habit._id}-${d}`]
                     return (
                       <div key={d} onClick={() => toggleTick(habit._id, d)}
-                           className={`flex items-center justify-center border-r border-slate-200 cursor-pointer transition-colors ${checked ? 'bg-indigo-50' : bgClass}`}
+                           className={`flex items-center justify-center border-r border-slate-200 cursor-pointer transition-colors ${checked ? 'bg-violet-50' : bgClass}`}
                            style={{ height: 52 }}>
                         {isSaving
-                          ? <Loader2 size={16} className="animate-spin text-indigo-400" />
+                          ? <Loader2 size={16} className="animate-spin text-violet-400" />
                           : checked
-                          ? <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }} className="w-5 h-5 rounded border border-indigo-600 bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+                          ? <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }} className="w-5 h-5 rounded-md text-white flex items-center justify-center shadow-sm" style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>
                               <CheckSquare size={14} className="stroke-[3px]" />
                             </motion.div>
-                          : <div className="w-5 h-5 rounded border border-slate-300 group-hover:border-indigo-300 bg-white transition-colors" />
+                          : <div className="w-5 h-5 rounded-md border border-slate-300 group-hover:border-violet-300 bg-white transition-colors" />
                         }
                       </div>
                     )
@@ -295,16 +298,16 @@ export default function Tracker() {
                        className="text-sm text-slate-900 bg-transparent outline-none w-full placeholder-slate-400 font-semibold" />
                 {newHabit && (
                   <button onClick={addHabit} disabled={addingHabit}
-                          className="text-[10px] text-white font-bold flex-shrink-0 px-2 py-1 bg-indigo-600 rounded hover:bg-indigo-700 transition-colors uppercase tracking-wider">Add</button>
+                          className="text-[10px] text-white font-bold flex-shrink-0 px-2 py-1 rounded-lg hover:opacity-90 transition-colors uppercase tracking-wider" style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}>Add</button>
                 )}
               </div>
               {days.map(d => <div key={d} className="border-r border-slate-200 bg-slate-50" style={{ height: 48 }} />)}
             </div>
 
             {/* Mood row */}
-            <div className="bg-slate-50">
+            <div style={{ background: '#f5f3ff' }}>
               <div className="grid" style={{ gridTemplateColumns: gridTemplate }}>
-                <div className="flex items-center px-4 py-3 border-r border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-widest sticky left-0 z-20 bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
+                <div className="flex items-center px-4 py-3 border-r border-slate-200 text-xs font-bold text-violet-600 uppercase tracking-widest sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" style={{ background: '#f5f3ff' }}>
                   <span className="mr-2 text-base">✨</span> Daily Mood
                 </div>
                 {days.map(d => {
@@ -313,7 +316,7 @@ export default function Tracker() {
                   return (
                     <div key={d} className="relative flex items-center justify-center border-r border-slate-200 cursor-pointer hover:bg-indigo-50 transition-colors"
                          style={{ height: 48 }}
-                         onClick={() => setMoodPicker(moodPicker === d ? null : d)}>
+                         onClick={() => setMoodPicker(moodPicker === d ? null : d)} style={{ background: 'inherit' }}>
                       <span className="text-xl leading-none">{mood || <span className="text-slate-300 text-[10px]">·</span>}</span>
                       {moodPicker === d && (
                         <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50
@@ -336,7 +339,7 @@ export default function Tracker() {
         </div>
 
         {/* Mood legend */}
-        <div className="card py-3 px-5 inline-block !rounded-full">
+        <div className="card py-3 px-5 inline-block !rounded-full" style={{ background: 'linear-gradient(135deg, #f5f3ff, #fdf2f8)' }}>
           <p className="text-xs font-semibold text-slate-500 tracking-wide">
             😊 Happy &nbsp;·&nbsp; 😄 Excited &nbsp;·&nbsp; 😐 Neutral &nbsp;·&nbsp; 😞 Sad &nbsp;·&nbsp; 😴 Tired &nbsp;·&nbsp; 😤 Stressed &nbsp;·&nbsp; 🥰 Grateful
           </p>
@@ -344,10 +347,10 @@ export default function Tracker() {
 
         {/* Edit Modal */}
         {editingHabit && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-sm overflow-hidden">
-              <div className="flex justify-between items-center p-4 border-b border-slate-100">
-                <h3 className="font-bold text-lg text-slate-900">Edit Habit</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fade-in">
+            <div className="bg-white rounded-2xl shadow-2xl border border-violet-100 w-full max-w-sm overflow-hidden">
+              <div className="flex justify-between items-center p-4 border-b border-violet-50" style={{ background: 'linear-gradient(90deg, #f5f3ff, #faf5ff)' }}>
+                <h3 className="font-bold text-lg text-slate-800">Edit Habit</h3>
                 <button onClick={() => setEditingHabit(null)} className="text-slate-400 hover:text-slate-600"><X size={20}/></button>
               </div>
               <div className="p-5 space-y-4">
