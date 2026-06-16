@@ -260,7 +260,7 @@ export default function Tracker() {
               const bgClass = hi % 2 === 0 ? 'bg-white' : 'bg-slate-50'
               return (
                 <div key={habit._id} className="grid border-b border-slate-200 hover:bg-slate-50 transition-colors group" style={{ gridTemplateColumns: gridTemplate }}>
-                  <div className={`flex items-center gap-3 px-4 py-3 border-r border-slate-200 text-sm font-semibold text-slate-900 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] ${bgClass} group-hover:bg-slate-50`}>
+                  <div className={`flex items-center gap-3 px-4 py-3 border-r border-slate-200 text-xs font-bold text-slate-900 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] ${bgClass} group-hover:bg-slate-50`}>
                     <span className="text-xl">{habit.icon}</span>
                     <span className="truncate flex-1 pr-6">{habit.name}</span>
                     <button onClick={() => setEditingHabit(habit)} className="opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-slate-200 rounded-md absolute right-2 text-slate-500">
