@@ -34,20 +34,20 @@ export default function About() {
   return (
     <Layout user={user}>
       <div className="bg-white min-h-full shadow-sm border border-slate-200/60 overflow-hidden text-slate-800 font-sans pb-24 relative">
-        
+
         {/* Top Black Bar mimicking the design */}
         <div className="bg-[#111] text-white flex justify-between items-center px-6 md:px-12 py-5 relative z-10">
-           <div className="font-bold text-xl md:text-2xl tracking-tight flex items-center gap-3">
-             <div className="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center font-black text-xl">A</div>
-             ajithkumar
-           </div>
-           <div className="hidden md:flex gap-8 text-base font-medium text-gray-400">
-             <span className="text-white cursor-pointer">about me</span>
-             <span className="hover:text-white cursor-pointer transition-colors">portfolio</span>
-             <span className="hover:text-white cursor-pointer transition-colors">projects</span>
-             <span className="hover:text-white cursor-pointer transition-colors">blog</span>
-             <span className="hover:text-white cursor-pointer transition-colors">contact me</span>
-           </div>
+          <div className="font-bold text-xl md:text-2xl tracking-tight flex items-center gap-3">
+            <div className="bg-white text-black rounded-full w-10 h-10 flex items-center justify-center font-black text-xl">A</div>
+            ajithkumar
+          </div>
+          <div className="hidden md:flex gap-8 text-base font-medium text-gray-400">
+            <span className="text-white cursor-pointer">about me</span>
+            <span className="hover:text-white cursor-pointer transition-colors">portfolio</span>
+            <span className="hover:text-white cursor-pointer transition-colors">projects</span>
+            <span className="hover:text-white cursor-pointer transition-colors">blog</span>
+            <span className="hover:text-white cursor-pointer transition-colors">contact me</span>
+          </div>
         </div>
 
         {/* Arrow pointer from top bar */}
@@ -66,9 +66,9 @@ export default function About() {
                   Since I cannot directly download the image you pasted, I have added a placeholder that will use your avatar if you have one. 
                   To use the picture you provided, please save it as "profile.jpg" in the "public" folder and change the src below to "/profile.jpg"
                 */}
-                <img 
-                  src="/profile.jpg" 
-                  alt="Ajith Kumar" 
+                <img
+                  src="/profile.jpeg"
+                  alt="Ajith Kumar"
                   className="w-full h-full object-cover bg-slate-100"
                   onError={(e) => {
                     e.target.onerror = null;
@@ -83,7 +83,7 @@ export default function About() {
               <div className="border-b border-slate-300 pb-2 mb-6 inline-block">
                 <h2 className="text-2xl font-normal text-slate-800">Me talking about myself</h2>
               </div>
-              
+
               <p className="text-slate-500 italic text-lg md:text-xl mb-8 leading-relaxed max-w-2xl">
                 Final-year ECE student bridging hardware and software. I build intelligent electronics, embedded systems, and full-stack web applications, leveraging prompt engineering to optimize workflows and create scalable solutions.
               </p>
@@ -101,15 +101,15 @@ export default function About() {
               <div className="grid grid-cols-3 gap-6 text-sm text-slate-500 border-t border-slate-100 pt-8">
                 <div className="text-center md:text-left">
                   <span className="block text-4xl font-bold text-slate-900 mb-1">4</span>
-                  Projects in<br/>Electronics
+                  Projects in<br />Electronics
                 </div>
                 <div className="text-center md:text-left">
                   <span className="block text-4xl font-bold text-slate-900 mb-1">2</span>
-                  Projects in<br/>Software
+                  Projects in<br />Software
                 </div>
                 <div className="text-center md:text-left">
                   <span className="block text-4xl font-bold text-slate-900 mb-1">3+</span>
-                  Builds in<br/>Robotics
+                  Builds in<br />Robotics
                 </div>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function About() {
 
           {/* Three columns below */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start mt-16 pt-16 border-t border-slate-100">
-            
+
             {/* Left Col */}
             <div>
               <div className="border-b border-slate-300 pb-2 mb-6">
@@ -133,7 +133,7 @@ export default function About() {
 
             {/* Middle Col - Animated Pie Chart */}
             <div className="flex justify-center items-center py-8">
-               <PieChart />
+              <PieChart />
             </div>
 
             {/* Right Col */}
@@ -161,7 +161,7 @@ function PieChart() {
   return (
     <div className="relative w-64 h-64 flex items-center justify-center">
       {/* The rotating pie background */}
-      <motion.div 
+      <motion.div
         initial={{ rotate: -180, scale: 0.5, opacity: 0 }}
         whileInView={{ rotate: 0, scale: 1, opacity: 1 }}
         viewport={{ once: false, margin: "-50px" }}
@@ -175,22 +175,22 @@ function PieChart() {
           )`
         }}
       />
-      
+
       {/* Labels positioned precisely over their respective slices (non-rotating) */}
-      
+
       {/* Hardware: 0% to 45% (Right side) */}
       <div className="absolute top-1/2 right-6 -translate-y-1/2 text-white text-xs font-bold z-10 pointer-events-none text-right">
-        Hardware<br/><span className="font-normal opacity-80">44%</span>
+        Hardware<br /><span className="font-normal opacity-80">44%</span>
       </div>
-      
+
       {/* Robotics: 45% to 78% (Bottom-Left side) */}
       <div className="absolute bottom-10 left-12 text-slate-800 text-xs font-bold z-10 pointer-events-none">
-        Robotics<br/><span className="font-normal opacity-80">34%</span>
+        Robotics<br /><span className="font-normal opacity-80">34%</span>
       </div>
 
       {/* Software: 78% to 100% (Top-Left side) */}
       <div className="absolute top-10 left-12 text-white text-xs font-bold z-10 pointer-events-none">
-        Software<br/><span className="font-normal opacity-80">22%</span>
+        Software<br /><span className="font-normal opacity-80">22%</span>
       </div>
 
       {/* Inner circle for donut effect */}
