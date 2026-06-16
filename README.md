@@ -1,4 +1,4 @@
-# HabitFlow 🌱
+# HabitSync 🌱
 > Full-stack Daily Habit Tracker — Next.js + MongoDB + Email OTP + Cloudinary
 
 ---
@@ -48,7 +48,7 @@ Open [http://localhost:3000](http://localhost:3000)
 1. Push this folder to a GitHub repository
 2. Go to [vercel.com](https://vercel.com) → Import your repo
 3. In **Environment Variables**, add all variables from `.env.local.example`
-4. Set `NEXT_PUBLIC_APP_URL` to your Vercel URL (e.g. `https://habitflow.vercel.app`)
+4. Set `NEXT_PUBLIC_APP_URL` to your Vercel URL (e.g. `https://habitsync.vercel.app`)
 5. Click **Deploy** ✅
 
 ---
@@ -56,7 +56,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ## 📁 Project Structure
 
 ```
-habitflow/
+habitsync/
 ├── pages/
 │   ├── index.js          # Redirects to login
 │   ├── login.js          # Login page
@@ -112,7 +112,7 @@ MONGODB_URI=mongodb+srv://...
 JWT_SECRET=your-secret-32-chars-min
 EMAIL_USER=your@gmail.com
 EMAIL_PASS=your-16-char-app-password
-EMAIL_FROM="HabitFlow <your@gmail.com>"
+EMAIL_FROM="HabitSync <your@gmail.com>"
 NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 CLOUDINARY_CLOUD_NAME=xxx

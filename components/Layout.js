@@ -39,7 +39,7 @@ export default function Layout({ children, user, onUserUpdate }) {
               <Sparkles className="text-white" size={22} />
             </div>
             <div>
-              <div className="font-extrabold text-xl tracking-tight text-white">Habit Tracker</div>
+              <div className="font-extrabold text-xl tracking-tight text-white">HabitSync</div>
             </div>
           </div>
           <button className="md:hidden text-white/60 hover:text-white transition-colors" onClick={() => setSidebarOpen(false)}>

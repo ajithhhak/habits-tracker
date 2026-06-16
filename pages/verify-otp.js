@@ -40,7 +40,7 @@ export default function VerifyOTP() {
       })
       const data = await r.json()
       if (!r.ok) { toast.error(data.error); return }
-      toast.success('Email verified! Welcome to HabitFlow 🎉')
+      toast.success('Email verified! Welcome to HabitSync 🎉')
       router.push('/dashboard')
     } finally { setLoading(false) }
   }

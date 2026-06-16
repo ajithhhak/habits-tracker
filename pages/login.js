@@ -84,7 +84,7 @@ export default function Login() {
                style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
             <Sparkles className="text-white" size={28} />
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Sign in to Habit Tracker</h1>
+          <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Sign in to HabitSync</h1>
           <p className="text-slate-500 mt-2 text-sm font-medium">Welcome back, please enter your details.</p>
         </div>
 
