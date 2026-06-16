@@ -10,7 +10,7 @@ const NAV = [
   { href: '/tracker', icon: CheckSquare, label: 'Habit Tracker' },
   { href: '/calendar', icon: CalendarIcon, label: 'Calendar' },
   { href: '/profile', icon: User, label: 'Profile' },
-  { href: '/about', icon: Info, label: 'About Us' },
+  { href: '/about', icon: Info, label: 'About Me' },
 ]
 
 export default function Layout({ children, user, onUserUpdate }) {
@@ -30,7 +30,7 @@ export default function Layout({ children, user, onUserUpdate }) {
                          transform transition-transform duration-300 ease-out
                          md:relative md:translate-x-0
                          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-             style={{ background: 'linear-gradient(180deg, #7c3aed 0%, #6d28d9 40%, #5b21b6 100%)' }}>
+        style={{ background: 'linear-gradient(180deg, #7c3aed 0%, #6d28d9 40%, #5b21b6 100%)' }}>
         {/* Logo */}
         <div className="p-6 border-b border-white/10 flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -131,14 +131,14 @@ export default function Layout({ children, user, onUserUpdate }) {
             {user?.streak > 0 && (
               <div className="flex items-center gap-1.5 text-orange-600
                               px-3 py-1.5 rounded-full text-sm font-semibold border shadow-sm"
-                   style={{ background: 'linear-gradient(135deg, #fff7ed, #fef3c7)', borderColor: '#fdba74' }}>
+                style={{ background: 'linear-gradient(135deg, #fff7ed, #fef3c7)', borderColor: '#fdba74' }}>
                 <Flame size={16} className="text-orange-500" />
                 <span>{user.streak} day streak</span>
               </div>
             )}
             <Link href="/profile" className="w-9 h-9 rounded-full overflow-hidden shadow-md hover:shadow-lg transition-shadow ring-2 ring-violet-200">
               <div className="w-full h-full flex items-center justify-center font-bold text-sm"
-                   style={{ background: 'linear-gradient(135deg, #c4b5fd, #a78bfa)', color: 'white' }}>
+                style={{ background: 'linear-gradient(135deg, #c4b5fd, #a78bfa)', color: 'white' }}>
                 {user?.avatar ? <img src={user.avatar} alt="" className="w-full h-full object-cover" /> : user?.name?.[0]?.toUpperCase()}
               </div>
             </Link>
