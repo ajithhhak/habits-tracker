@@ -185,8 +185,10 @@ export default function Tracker() {
             <div style={{ minWidth: `${224 + daysInMonth * 40}px` }}>
 
             {/* Summary strip */}
-            <div className="bg-slate-50 text-slate-900 px-5 py-3 border-b border-slate-200">
-              <span className="text-xs font-bold tracking-widest uppercase flex items-center gap-2"><CheckSquare size={16} className="text-indigo-600" /> Daily Goals</span>
+            <div className="bg-slate-50 text-slate-900 border-b border-slate-200">
+              <div className="px-5 py-3 sticky left-0 w-max z-20">
+                <span className="text-xs font-bold tracking-widest uppercase flex items-center gap-2"><CheckSquare size={16} className="text-indigo-600" /> Daily Goals</span>
+              </div>
             </div>
 
             {/* Completed / Not / % rows */}
