@@ -3,6 +3,8 @@ import { format, getDaysInMonth, startOfMonth, getDay, addMonths, subMonths } fr
 import { useAuth } from '../lib/useAuth'
 import Layout from '../components/Layout'
 import toast from 'react-hot-toast'
+import { motion } from 'framer-motion'
+import { ChevronLeft, ChevronRight, CheckSquare, Loader2, Settings, Trash2, X } from 'lucide-react'
 
 const WEEK_THEMES = [
   { bg: '#dbeafe', fg: '#1e40af', hdr: '#2563eb' },
@@ -24,6 +26,7 @@ export default function Tracker() {
   const [newHabit, setNewHabit] = useState('')
   const [addingHabit, setAddingHabit] = useState(false)
   const [moodPicker, setMoodPicker] = useState(null) // day number
+  const [editingHabit, setEditingHabit] = useState(null)
 
   const monthKey  = format(currentDate, 'yyyy-MM')
   const daysInMonth = getDaysInMonth(currentDate)
@@ -112,31 +115,65 @@ export default function Tracker() {
     } finally { setAddingHabit(false) }
   }
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">Loading…</div>
+  async function saveHabit(h) {
+    try {
+      const r = await fetch('/api/habits', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: h._id, name: h.name, icon: h.icon })
+      })
+      const d = await r.json()
+      setHabits(prev => prev.map(p => p._id === h._id ? d.habit : p))
+      setEditingHabit(null)
+      toast.success('Habit updated!')
+    } catch { toast.error('Failed to update habit') }
+  }
+
+  async function deleteHabit(id) {
+    if (!confirm('Are you sure you want to delete this habit?')) return
+    try {
+      await fetch(`/api/habits?id=${id}`, { method: 'DELETE' })
+      setHabits(prev => prev.filter(p => p._id !== id))
+      setEditingHabit(null)
+      toast.success('Habit deleted!')
+    } catch { toast.error('Failed to delete habit') }
+  }
+
+  if (loading) {
+    return (
+      <Layout user={user}>
+        <div className="flex flex-col items-center justify-center h-[60vh] text-surface-400">
+          <Loader2 className="animate-spin mb-4 text-brand-500" size={32} />
+          <p className="font-medium animate-pulse">Loading tracker...</p>
+        </div>
+      </Layout>
+    )
+  }
 
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1)
 
   return (
     <Layout user={user}>
-      <div className="space-y-4 animate-fade-in">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
         {/* Month nav */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900">
+            <h1 className="text-3xl font-extrabold text-surface-900 dark:text-white flex items-center gap-3">
+              <CheckSquare className="text-brand-500" size={32} />
               {format(currentDate, 'MMMM yyyy')}
             </h1>
-            <p className="text-sm text-gray-400">Click any cell to tick / untick a habit</p>
+            <p className="text-surface-500 dark:text-surface-400 font-medium mt-1">Click any cell to tick / untick a habit</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setCurrentDate(d => subMonths(d, 1))} className="btn-secondary px-4 py-2 text-sm">← Prev</button>
-            <button onClick={() => setCurrentDate(new Date())} className="btn-secondary px-4 py-2 text-sm">Today</button>
-            <button onClick={() => setCurrentDate(d => addMonths(d, 1))} className="btn-secondary px-4 py-2 text-sm">Next →</button>
+            <button onClick={() => setCurrentDate(d => subMonths(d, 1))} className="btn-secondary px-3 py-2 flex items-center gap-1"><ChevronLeft size={18}/> Prev</button>
+            <button onClick={() => setCurrentDate(new Date())} className="btn-secondary px-4 py-2 font-bold">Today</button>
+            <button onClick={() => setCurrentDate(d => addMonths(d, 1))} className="btn-secondary px-3 py-2 flex items-center gap-1">Next <ChevronRight size={18}/></button>
           </div>
         </div>
 
         {/* Main tracker table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-auto">
-          <div style={{ minWidth: `${Math.max(900, 200 + daysInMonth * 34)}px` }}>
+        <div className="card glass overflow-hidden !p-0">
+          <div className="overflow-auto custom-scrollbar">
+            <div style={{ minWidth: `${Math.max(900, 200 + daysInMonth * 34)}px` }}>
 
             {/* Summary strip */}
             <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-4 py-2">
@@ -214,11 +251,14 @@ export default function Tracker() {
             {habits.map((habit, hi) => {
               const rowBg = hi % 2 === 0 ? '#fafbfc' : '#fff'
               return (
-                <div key={habit._id} className="flex border-b hover:bg-gray-50 transition-colors" style={{ borderColor: '#f0f0f0' }}>
-                  <div className="w-48 flex-shrink-0 flex items-center gap-2 px-3 py-2 border-r border-gray-200 text-xs font-medium text-gray-700"
+                <div key={habit._id} className="flex border-b hover:bg-gray-50 transition-colors group" style={{ borderColor: '#f0f0f0' }}>
+                  <div className="w-48 flex-shrink-0 flex items-center gap-2 px-3 py-2 border-r border-gray-200 text-xs font-medium text-gray-700 relative"
                        style={{ background: rowBg }}>
                     <span>{habit.icon}</span>
-                    <span className="truncate">{habit.name}</span>
+                    <span className="truncate flex-1 pr-6">{habit.name}</span>
+                    <button onClick={() => setEditingHabit(habit)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white rounded-md absolute right-1.5 shadow-sm border border-transparent hover:border-gray-200 bg-gray-50/50">
+                      <Settings size={14} className="text-gray-500" />
+                    </button>
                   </div>
                   {days.map(d => {
                     const dateKey = `${monthKey}-${String(d).padStart(2,'0')}`
@@ -292,6 +332,7 @@ export default function Tracker() {
               </div>
             </div>
 
+            </div>
           </div>
         </div>
 
@@ -301,7 +342,38 @@ export default function Tracker() {
             😊 Happy · 😄 Excited · 😐 Neutral · 😞 Sad · 😴 Tired · 😤 Stressed · 🥰 Grateful
           </p>
         </div>
-      </div>
+
+        {/* Edit Modal */}
+        {editingHabit && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-900/40 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-surface-900 rounded-2xl shadow-2xl border border-surface-200 dark:border-surface-800 w-full max-w-sm overflow-hidden">
+              <div className="flex justify-between items-center p-4 border-b border-surface-100 dark:border-surface-800">
+                <h3 className="font-extrabold text-lg text-surface-900 dark:text-white">Edit Habit</h3>
+                <button onClick={() => setEditingHabit(null)} className="text-surface-400 hover:text-surface-600 dark:hover:text-surface-300"><X size={20}/></button>
+              </div>
+              <div className="p-5 space-y-4">
+                <div>
+                  <label className="text-sm font-bold text-surface-700 dark:text-surface-300 block mb-1">Habit Name</label>
+                  <input value={editingHabit.name} onChange={e => setEditingHabit({...editingHabit, name: e.target.value})} className="input py-2" />
+                </div>
+                <div>
+                  <label className="text-sm font-bold text-surface-700 dark:text-surface-300 block mb-1">Icon</label>
+                  <input value={editingHabit.icon} onChange={e => setEditingHabit({...editingHabit, icon: e.target.value})} className="input py-2 w-16 text-center text-xl" maxLength={2} />
+                </div>
+              </div>
+              <div className="p-4 border-t border-surface-100 dark:border-surface-800 flex justify-between bg-surface-50 dark:bg-surface-950/50 items-center">
+                <button onClick={() => deleteHabit(editingHabit._id)} className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 transition-colors">
+                  <Trash2 size={16}/> Delete
+                </button>
+                <div className="flex gap-2">
+                  <button onClick={() => setEditingHabit(null)} className="btn-secondary px-3 py-1.5 text-sm">Cancel</button>
+                  <button onClick={() => saveHabit(editingHabit)} className="btn-primary px-4 py-1.5 text-sm">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </motion.div>
     </Layout>
   )
 }

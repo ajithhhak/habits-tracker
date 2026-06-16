@@ -4,37 +4,60 @@
 @tailwind utilities;
 
 @layer base {
-  body { @apply font-sans bg-gray-50 text-gray-900 antialiased; }
+  body { 
+    @apply font-sans bg-surface-50 text-surface-900 antialiased transition-colors duration-300; 
+  }
+  .dark body {
+    @apply bg-surface-950 text-surface-50;
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-xl
-           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 shadow-sm;
+    @apply bg-brand-600 hover:bg-brand-500 text-white font-semibold px-5 py-2.5 rounded-xl
+           transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 shadow-lg hover:shadow-brand-500/25
+           active:scale-[0.98];
   }
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-semibold px-5 py-2.5 rounded-xl
-           border border-gray-200 transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-gray-300 shadow-sm;
+    @apply bg-white dark:bg-surface-900 hover:bg-surface-100 dark:hover:bg-surface-800 
+           text-surface-700 dark:text-surface-200 font-semibold px-5 py-2.5 rounded-xl
+           border border-surface-200 dark:border-surface-800 transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-surface-300 dark:focus:ring-surface-700 shadow-sm
+           active:scale-[0.98];
   }
   .input {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white
-           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
-           text-gray-900 placeholder-gray-400 transition-all duration-200 text-sm;
+    @apply w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-800 
+           bg-white dark:bg-surface-900 focus:outline-none focus:ring-2 focus:ring-brand-500 
+           focus:border-transparent text-surface-900 dark:text-surface-50 
+           placeholder-surface-400 dark:placeholder-surface-500 transition-all duration-300 text-sm;
   }
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+    @apply bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-100 
+           dark:border-surface-800 p-6 transition-all duration-300;
+  }
+  .glass {
+    @apply bg-white/70 dark:bg-surface-900/70 backdrop-blur-md border border-white/20 
+           dark:border-surface-700/50 shadow-xl;
   }
 }
 
 /* Checkbox custom */
 input[type="checkbox"].habit-check {
-  width: 18px; height: 18px; cursor: pointer;
+  width: 20px; height: 20px; cursor: pointer;
   accent-color: #0d9488;
+  transition: all 0.2s ease-in-out;
+}
+input[type="checkbox"].habit-check:hover {
+  transform: scale(1.1);
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { 
+  @apply bg-surface-300 dark:bg-surface-700 rounded-full; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  @apply bg-surface-400 dark:bg-surface-600; 
+}
