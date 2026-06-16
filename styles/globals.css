@@ -5,38 +5,34 @@
 
 @layer base {
   body { 
-    @apply font-sans text-surface-50 antialiased selection:bg-brand-500 selection:text-white bg-surface-950;
-    /* Force dark mode background globally */
-    background: radial-gradient(circle at 50% 0%, #0B1120 0%, #000000 100%);
-    background-attachment: fixed;
+    @apply font-sans text-slate-900 antialiased selection:bg-indigo-500 selection:text-white bg-slate-50;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-brand-500 to-brand-400 hover:from-brand-400 hover:to-brand-300 text-surface-950 font-extrabold px-6 py-3 rounded-2xl
-           transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
-           focus:outline-none focus:ring-4 focus:ring-brand-500/50 shadow-[0_0_20px_rgba(0,210,255,0.4)] hover:shadow-[0_0_30px_rgba(0,210,255,0.6)]
-           active:scale-95;
+    @apply bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg
+           transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-sm
+           active:scale-[0.98];
   }
   .btn-secondary {
-    @apply bg-surface-800/50 hover:bg-surface-700/80 backdrop-blur-md
-           text-surface-50 font-bold px-6 py-3 rounded-2xl
-           border border-surface-600/50 transition-all duration-300
-           focus:outline-none focus:ring-4 focus:ring-surface-600/50 shadow-sm
-           active:scale-95;
+    @apply bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-2.5 rounded-lg
+           border border-slate-200 transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-slate-200 shadow-sm
+           active:scale-[0.98];
   }
   .input {
-    @apply w-full px-4 py-3.5 rounded-2xl border border-surface-700/50 
-           bg-surface-900/50 focus:bg-surface-900/80 focus:outline-none focus:ring-2 focus:ring-brand-500 
-           focus:border-brand-500 text-surface-50 backdrop-blur-md
-           placeholder-surface-500 transition-all duration-300 text-sm shadow-inner;
+    @apply w-full px-4 py-2.5 rounded-lg border border-slate-200 
+           bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 
+           focus:border-indigo-500 text-slate-900
+           placeholder-slate-400 transition-colors duration-200 text-sm shadow-sm;
   }
   .card {
-    @apply bg-surface-900/40 rounded-[2rem] shadow-2xl border border-surface-700/30 p-6 transition-all duration-500 backdrop-blur-2xl;
+    @apply bg-white rounded-xl shadow-sm border border-slate-200 p-6;
   }
   .glass {
-    @apply bg-surface-900/30 backdrop-blur-3xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)];
+    @apply bg-white border border-slate-200 shadow-sm;
   }
 }
 
