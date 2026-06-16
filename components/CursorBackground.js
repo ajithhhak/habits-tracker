@@ -10,6 +10,9 @@ export default function CursorBackground() {
   const x = useSpring(cursorX, springConfig)
   const y = useSpring(cursorY, springConfig)
 
+  const x2 = useSpring(cursorX, { damping: 40, stiffness: 80 })
+  const y2 = useSpring(cursorY, { damping: 40, stiffness: 80 })
+
   useEffect(() => {
     setMounted(true)
     const moveCursor = (e) => {
@@ -29,7 +32,7 @@ export default function CursorBackground() {
         className="fixed top-0 left-0 w-[600px] h-[600px] bg-brand-400/20 dark:bg-brand-500/20 rounded-full blur-[100px] pointer-events-none z-0 mix-blend-screen"
       />
       <motion.div
-        style={{ x: useSpring(cursorX, { damping: 40, stiffness: 80 }), y: useSpring(cursorY, { damping: 40, stiffness: 80 }), translateX: '-30%', translateY: '-70%' }}
+        style={{ x: x2, y: y2, translateX: '-30%', translateY: '-70%' }}
         className="fixed top-0 left-0 w-[400px] h-[400px] bg-blue-400/20 dark:bg-indigo-500/20 rounded-full blur-[80px] pointer-events-none z-0 mix-blend-screen"
       />
     </>
