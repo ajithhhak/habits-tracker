@@ -1,6 +1,6 @@
-import { deleteCookie } from 'cookies-next'
+import { clearAuthCookie } from '../../../lib/auth'
 
 export default function handler(req, res) {
-  deleteCookie('hf_token', { req, res, path: '/' })
+  clearAuthCookie(res)
   res.status(200).json({ message: 'Logged out' })
 }

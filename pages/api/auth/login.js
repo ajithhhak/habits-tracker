@@ -1,7 +1,6 @@
 import { connectDB } from '../../../lib/db'
 import User from '../../../models/User'
-import { signToken } from '../../../lib/auth'
-import { setCookie } from 'cookies-next'
+import { signToken, setAuthCookie } from '../../../lib/auth'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -21,7 +20,7 @@ export default async function handler(req, res) {
   await user.save()
 
   const token = signToken({ id: user._id, email: user.email, name: user.name })
-  setCookie('hf_token', token, { req, res, maxAge: 60 * 60 * 24 * 30, httpOnly: true, path: '/', sameSite: 'lax' })
+  setAuthCookie(res, token)
 
   res.status(200).json({ user: user.toSafeObject() })
 }

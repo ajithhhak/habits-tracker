@@ -4,8 +4,5 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'res.cloudinary.com'],
   },
-  api: {
-    bodyParser: false,
-  },
 }
 module.exports = nextConfig
