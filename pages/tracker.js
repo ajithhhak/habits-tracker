@@ -181,7 +181,7 @@ export default function Tracker() {
         {/* Main tracker table */}
         <div className="card !p-0 overflow-hidden">
           <div className="overflow-auto custom-scrollbar relative z-10">
-            <div style={{ minWidth: `${Math.max(900, 200 + daysInMonth * 34)}px` }}>
+            <div style={{ minWidth: `${224 + daysInMonth * 40}px` }}>
 
             {/* Summary strip */}
             <div className="bg-slate-50 text-slate-900 px-5 py-3 border-b border-slate-200">
@@ -214,7 +214,7 @@ export default function Tracker() {
                 const span  = wg.end - wg.start + 1
                 return (
                   <div key={wi} className="flex items-center justify-center py-2 text-xs font-bold uppercase tracking-wider border-r border-slate-200 bg-slate-50 text-indigo-600"
-                       style={{ flex: span }}>
+                       style={{ flex: span, minWidth: span * 40 }}>
                     Week {wi + 1}
                   </div>
                 )
