@@ -1,7 +1,21 @@
 import Layout from '../components/Layout'
 import { motion } from 'framer-motion'
 import { useAuth } from '../lib/useAuth'
-import { Loader2, Github, Linkedin } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
+
+const GithubIcon = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3-.3 6-1.5 6-6.5a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 5 3 6.2 6 6.5a4.8 4.8 0 0 0-1 3.2v4"></path>
+  </svg>
+)
+
+const LinkedinIcon = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+    <rect x="2" y="9" width="4" height="12"></rect>
+    <circle cx="4" cy="4" r="2"></circle>
+  </svg>
+)
 
 export default function About() {
   const { user, loading } = useAuth()
@@ -72,10 +86,10 @@ export default function About() {
 
               <div className="flex items-center gap-4 mb-10">
                 <a href="https://www.linkedin.com/in/ajith-kumar-choudoju-37181a2b7" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full bg-[#0077b5] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-md">
-                  <Linkedin size={28} />
+                  <LinkedinIcon size={28} />
                 </a>
                 <a href="https://github.com/ajithhhak" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full bg-[#333] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-md">
-                  <Github size={28} />
+                  <GithubIcon size={28} />
                 </a>
               </div>
 
