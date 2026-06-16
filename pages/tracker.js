@@ -46,8 +46,9 @@ export default function Tracker() {
   const completedByDay   = Array.from({ length: daysInMonth }, (_, i) => {
     const dateKey = `${monthKey}-${String(i+1).padStart(2,'0')}`
     const log = logs[dateKey]
-    if (!log) return 0
-    return Object.values(log.ticks || {}).filter(Boolean).length
+    if (!log || !log.ticks) return 0
+    // Only count ticks for habits that actually exist in the current `habits` list
+    return habits.filter(h => log.ticks[h._id]).length
   })
   const pctByDay = completedByDay.map(c => habits.length ? Math.round(c / habits.length * 100) : 0)
 
