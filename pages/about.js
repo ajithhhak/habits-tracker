@@ -123,7 +123,7 @@ export default function About() {
               <div className="border-b border-slate-300 pb-2 mb-6">
                 <h3 className="text-2xl font-normal text-slate-800">I'm a hardware guy</h3>
               </div>
-              <ul className="space-y-4 text-slate-600 text-base">
+              <ul className="space-y-4 text-slate-800 text-base font-bold">
                 <li className="flex items-center gap-3"><span className="w-2 h-2 bg-slate-800 rounded-full shrink-0"></span> Good at core ECE subjects</li>
                 <li className="flex items-center gap-3"><span className="w-2 h-2 bg-slate-800 rounded-full shrink-0"></span> Embedded Systems</li>
                 <li className="flex items-center gap-3"><span className="w-2 h-2 bg-slate-800 rounded-full shrink-0"></span> Robotics & Automation</li>
@@ -141,7 +141,7 @@ export default function About() {
               <div className="border-b border-slate-300 pb-2 mb-6">
                 <h3 className="text-2xl font-normal text-slate-800">I also do some coding</h3>
               </div>
-              <ul className="space-y-4 text-slate-600 text-base">
+              <ul className="space-y-4 text-slate-800 text-base font-bold">
                 <li className="flex items-center gap-3"><span className="w-2 h-2 bg-slate-800 rounded-full shrink-0"></span> C Language (Proficient)</li>
                 <li className="flex items-center gap-3"><span className="w-2 h-2 bg-slate-800 rounded-full shrink-0"></span> Full-stack Web Dev</li>
                 <li className="flex items-center gap-3"><span className="w-2 h-2 bg-slate-800 rounded-full shrink-0"></span> Prompt Engineering</li>
