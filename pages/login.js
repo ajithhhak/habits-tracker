@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -8,19 +8,36 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [health, setHealth] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(d => setHealth(d))
+      .catch(() => setHealth({ ok: false }))
+  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
+    if (!form.email.trim()) { setError('Please enter your email'); return }
+    if (!form.password)     { setError('Please enter your password'); return }
+
     setLoading(true)
     try {
       const r = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ email: form.email.trim(), password: form.password }),
       })
+
       let data
-      try { data = await r.json() } catch { setError('Server error — please try again'); return }
+      try {
+        data = await r.json()
+      } catch {
+        setError('Server returned invalid response. Check Vercel Function Logs.')
+        return
+      }
 
       if (!r.ok) {
         if (data.userId) {
@@ -28,13 +45,15 @@ export default function Login() {
           router.push(`/verify-otp?userId=${data.userId}`)
           return
         }
-        setError(data.error || 'Login failed')
+        setError(data?.error || `Error ${r.status}`)
         return
       }
-      toast.success(`Welcome back, ${data.user.name}!`)
+
+      toast.success(`Welcome back, ${data.user.name}! 👋`)
       router.push('/dashboard')
+
     } catch (err) {
-      setError('Network error — check your connection')
+      setError('Network error: ' + err.message)
     } finally {
       setLoading(false)
     }
@@ -56,12 +75,22 @@ export default function Login() {
           <p className="text-gray-500 mt-1 text-sm">Your daily habit companion</p>
         </div>
 
+        {/* Health check */}
+        {health && (!health.env?.hasMongo || !health.env?.hasJwt) && (
+          <div className="mb-4 p-3 rounded-xl text-xs font-mono border bg-red-50 border-red-200 text-red-800">
+            <div className="font-bold mb-1">⚠️ Missing environment variables in Vercel:</div>
+            {!health.env?.hasMongo && <div>❌ MONGODB_URI not set</div>}
+            {!health.env?.hasJwt   && <div>❌ JWT_SECRET not set</div>}
+            <div className="mt-1 text-red-600">Go to Vercel → Your Project → Settings → Environment Variables</div>
+          </div>
+        )}
+
         <div className="card shadow-xl">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Sign in to your account</h2>
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium flex items-start gap-2">
-              <span>⚠️</span><span>{error}</span>
+              <span className="flex-shrink-0">⚠️</span><span>{error}</span>
             </div>
           )}
 
@@ -75,7 +104,7 @@ export default function Login() {
               <input className="input" type="password" placeholder="••••••••" required {...field('password')} />
             </div>
             <button type="submit" disabled={loading}
-              className="btn-primary w-full text-center mt-2 flex items-center justify-center gap-2">
+              className="btn-primary w-full flex items-center justify-center gap-2 mt-2">
               {loading
                 ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Signing in…</>
                 : 'Sign In →'

@@ -3,30 +3,52 @@ import User from '../../../models/User'
 import { generateOTP, sendOTPEmail } from '../../../lib/email'
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+  // Allow CORS preflight
+  res.setHeader('Content-Type', 'application/json')
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
 
   try {
-    // Check env vars are set
+    // 1. Check env
     if (!process.env.MONGODB_URI) {
-      console.error('MONGODB_URI not set')
-      return res.status(500).json({ error: 'Server configuration error: database not configured' })
+      return res.status(500).json({ error: 'Database not configured. Add MONGODB_URI in Vercel environment variables.' })
+    }
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: 'JWT_SECRET not configured in Vercel environment variables.' })
     }
 
+    // 2. Parse body — handle both cases
+    let body = req.body
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body) } catch { return res.status(400).json({ error: 'Invalid request body' }) }
+    }
+    if (!body) return res.status(400).json({ error: 'Request body is empty' })
+
+    const { name, email, phone, password } = body
+
+    // 3. Validate
+    if (!name || !name.trim()) return res.status(400).json({ error: 'Name is required' })
+    if (!email || !email.trim()) return res.status(400).json({ error: 'Email is required' })
+    if (!phone || !phone.trim()) return res.status(400).json({ error: 'Phone number is required' })
+    if (!password) return res.status(400).json({ error: 'Password is required' })
+    if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' })
+
+    // 4. Connect DB
     await connectDB()
 
-    const { name, email, phone, password } = req.body
-
-    if (!name || !email || !phone || !password)
-      return res.status(400).json({ error: 'All fields are required' })
-    if (password.length < 6)
-      return res.status(400).json({ error: 'Password must be at least 6 characters' })
-
+    // 5. Check duplicate
     const existing = await User.findOne({ email: email.toLowerCase().trim() })
-    if (existing) return res.status(409).json({ error: 'Email already registered. Please login.' })
+    if (existing) {
+      return res.status(409).json({ error: 'This email is already registered. Please sign in instead.' })
+    }
 
+    // 6. Create OTP
     const otp = generateOTP()
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
 
+    // 7. Save user
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -36,28 +58,29 @@ export default async function handler(req, res) {
       otpExpiry,
     })
 
-    // Try sending email — log error but don't block registration
+    // 8. Send email (non-blocking)
     try {
-      await sendOTPEmail(email, otp, name)
-      console.log('OTP email sent to', email)
+      await sendOTPEmail(user.email, otp, user.name)
     } catch (emailErr) {
-      console.error('Email send failed:', emailErr.message)
-      // Still return success — user can resend OTP
+      console.error('Email failed (non-fatal):', emailErr.message)
     }
 
     return res.status(201).json({
-      message: 'Account created! Check your email for OTP.',
+      message: 'Account created successfully! Check your email for the OTP.',
       userId: user._id.toString(),
-      // In dev, return OTP so you can test without email
-      ...(process.env.NODE_ENV !== 'production' && { devOtp: otp }),
     })
 
   } catch (err) {
-    console.error('Register error:', err)
-    // Mongoose duplicate key error
+    console.error('REGISTER ERROR:', err)
     if (err.code === 11000) {
-      return res.status(409).json({ error: 'Email already registered. Please login.' })
+      return res.status(409).json({ error: 'Email already registered. Please sign in.' })
     }
-    return res.status(500).json({ error: 'Something went wrong: ' + err.message })
+    if (err.message?.includes('MONGODB_URI')) {
+      return res.status(500).json({ error: err.message })
+    }
+    if (err.name === 'MongoServerSelectionError') {
+      return res.status(500).json({ error: 'Cannot connect to database. Check your MONGODB_URI and make sure 0.0.0.0/0 is whitelisted in MongoDB Atlas Network Access.' })
+    }
+    return res.status(500).json({ error: 'Server error: ' + err.message })
   }
 }
