@@ -68,7 +68,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-         style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
       {/* Decorative blobs */}
       <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full opacity-30 blur-3xl" style={{ background: 'radial-gradient(circle, #c4b5fd, transparent 70%)' }} />
       <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full opacity-25 blur-3xl" style={{ background: 'radial-gradient(circle, #f0abfc, transparent 70%)' }} />
@@ -81,7 +81,7 @@ export default function Login() {
       >
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-6"
-               style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
             <Sparkles className="text-white" size={28} />
           </div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Sign in to HabitSync</h1>
@@ -135,7 +135,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-8 font-medium">
-          🔒 Your data is securely encrypted
+          🔒 Your data is encrypted
         </p>
       </motion.div>
     </div>

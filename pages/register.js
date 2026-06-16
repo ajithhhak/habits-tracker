@@ -80,7 +80,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-12 relative overflow-hidden"
-         style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
       {/* Decorative blobs */}
       <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full opacity-30 blur-3xl" style={{ background: 'radial-gradient(circle, #c4b5fd, transparent 70%)' }} />
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-25 blur-3xl" style={{ background: 'radial-gradient(circle, #f0abfc, transparent 70%)' }} />
@@ -93,7 +93,7 @@ export default function Register() {
       >
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-6"
-               style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
             <Sparkles className="text-white" size={28} />
           </div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Create your account</h1>
@@ -110,7 +110,7 @@ export default function Register() {
           <div className="flex justify-center mb-8">
             <label className="cursor-pointer group relative">
               <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform duration-300 p-0.5"
-                   style={{ background: 'linear-gradient(135deg, #8b5cf6, #d946ef, #f97316)' }}>
+                style={{ background: 'linear-gradient(135deg, #8b5cf6, #d946ef, #f97316)' }}>
                 <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
                   {avatarPreview
                     ? <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
@@ -119,7 +119,7 @@ export default function Register() {
                 </div>
               </div>
               <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:scale-110 transition-transform"
-                   style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
+                style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
                 <span className="text-white text-lg font-bold leading-none mb-0.5">+</span>
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
@@ -186,7 +186,7 @@ export default function Register() {
             <Link href="/login" className="font-semibold hover:underline" style={{ color: '#7c3aed' }}>Sign in</Link>
           </p>
         </div>
-        <p className="text-center text-xs text-slate-400 mt-8 font-medium">🔒 Your data is securely encrypted</p>
+        <p className="text-center text-xs text-slate-400 mt-8 font-medium">🔒 Your data is encrypted.</p>
       </motion.div>
     </div>
   )
