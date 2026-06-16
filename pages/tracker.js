@@ -190,12 +190,12 @@ export default function Tracker() {
 
             {/* Completed / Not / % rows */}
             {[
-              { label: 'Completed',     bgClass: 'bg-emerald-50/50', fgClass: 'text-emerald-700', val: d => completedByDay[d-1] },
-              { label: 'Not Completed', bgClass: 'bg-red-50/50', fgClass: 'text-red-700', val: d => habits.length - completedByDay[d-1] },
-              { label: '% Completed',   bgClass: 'bg-indigo-50/50', fgClass: 'text-indigo-700 font-bold', val: d => pctByDay[d-1] + '%' },
+              { label: 'Completed',     bgClass: 'bg-emerald-50', fgClass: 'text-emerald-700', val: d => completedByDay[d-1] },
+              { label: 'Not Completed', bgClass: 'bg-red-50', fgClass: 'text-red-700', val: d => habits.length - completedByDay[d-1] },
+              { label: '% Completed',   bgClass: 'bg-indigo-50', fgClass: 'text-indigo-700 font-bold', val: d => pctByDay[d-1] + '%' },
             ].map(row => (
               <div key={row.label} className={`flex border-b border-slate-100 ${row.bgClass} ${row.fgClass}`}>
-                <div className="w-56 flex-shrink-0 flex items-center justify-end px-4 py-2 text-xs font-bold uppercase tracking-wider">
+                <div className={`w-56 flex-shrink-0 flex items-center justify-end px-4 py-2 text-xs font-bold uppercase tracking-wider sticky left-0 z-20 ${row.bgClass} border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]`}>
                   {row.label}
                 </div>
                 {days.map(d => (
@@ -209,7 +209,7 @@ export default function Tracker() {
 
             {/* Week headers */}
             <div className="flex border-b border-slate-200">
-              <div className="w-56 flex-shrink-0 bg-slate-50 text-slate-500 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 flex items-center">Goal</div>
+              <div className="w-56 flex-shrink-0 bg-slate-50 text-slate-500 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 flex items-center sticky left-0 z-20 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Goal</div>
               {weekGroups.map((wg, wi) => {
                 const span  = wg.end - wg.start + 1
                 return (
@@ -223,7 +223,7 @@ export default function Tracker() {
 
             {/* Day name row */}
             <div className="flex border-b border-slate-100">
-              <div className="w-56 flex-shrink-0 bg-white" />
+              <div className="w-56 flex-shrink-0 bg-white sticky left-0 z-20 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" />
               {days.map(d => {
                 const dow = (firstDow + d - 1) % 7
                 return (
@@ -237,7 +237,7 @@ export default function Tracker() {
 
             {/* Day number row */}
             <div className="flex border-b border-slate-200 shadow-sm relative z-20">
-              <div className="w-56 flex-shrink-0 bg-white" />
+              <div className="w-56 flex-shrink-0 bg-white sticky left-0 z-30 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" />
               {days.map(d => {
                 const isToday = format(new Date(), 'yyyy-MM-dd') === `${monthKey}-${String(d).padStart(2,'0')}`
                 return (
@@ -253,10 +253,10 @@ export default function Tracker() {
 
             {/* Habit rows */}
             {habits.map((habit, hi) => {
-              const bgClass = hi % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'
+              const bgClass = hi % 2 === 0 ? 'bg-white' : 'bg-slate-50'
               return (
                 <div key={habit._id} className="flex border-b border-slate-200 hover:bg-slate-50 transition-colors group">
-                  <div className={`w-56 flex-shrink-0 flex items-center gap-3 px-4 py-3 border-r border-slate-200 text-sm font-semibold text-slate-900 relative ${bgClass}`}>
+                  <div className={`w-56 flex-shrink-0 flex items-center gap-3 px-4 py-3 border-r border-slate-200 text-sm font-semibold text-slate-900 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] ${bgClass} group-hover:bg-slate-50`}>
                     <span className="text-xl">{habit.icon}</span>
                     <span className="truncate flex-1 pr-6">{habit.name}</span>
                     <button onClick={() => setEditingHabit(habit)} className="opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-slate-200 rounded-md absolute right-2 text-slate-500">
@@ -288,7 +288,7 @@ export default function Tracker() {
 
             {/* Add habit row */}
             <div className="flex border-b border-slate-200">
-              <div className="w-56 flex-shrink-0 flex items-center gap-2 px-4 py-3 border-r border-slate-200 bg-slate-50">
+              <div className="w-56 flex-shrink-0 flex items-center gap-2 px-4 py-3 border-r border-slate-200 bg-slate-50 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                 <input value={newHabit} onChange={e => setNewHabit(e.target.value)}
                        onKeyDown={e => e.key === 'Enter' && addHabit()}
                        placeholder="+ Add a habit…"
@@ -302,9 +302,9 @@ export default function Tracker() {
             </div>
 
             {/* Mood row */}
-            <div className="bg-slate-50/50">
+            <div className="bg-slate-50">
               <div className="flex">
-                <div className="w-56 flex-shrink-0 flex items-center px-4 py-3 border-r border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-widest">
+                <div className="w-56 flex-shrink-0 flex items-center px-4 py-3 border-r border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-widest sticky left-0 z-20 bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                   <span className="mr-2 text-base">✨</span> Daily Mood
                 </div>
                 {days.map(d => {
