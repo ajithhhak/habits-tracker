@@ -29,6 +29,7 @@ export default function Tracker() {
   const monthKey  = format(currentDate, 'yyyy-MM')
   const daysInMonth = getDaysInMonth(currentDate)
   const firstDow  = getDay(startOfMonth(currentDate)) // 0=Sun
+  const gridTemplate = `224px repeat(${daysInMonth}, minmax(40px, 1fr))`
 
   // Week groups
   const weekGroups = []
@@ -194,13 +195,12 @@ export default function Tracker() {
               { label: 'Not Completed', bgClass: 'bg-red-50', fgClass: 'text-red-700', val: d => habits.length - completedByDay[d-1] },
               { label: '% Completed',   bgClass: 'bg-indigo-50', fgClass: 'text-indigo-700 font-bold', val: d => pctByDay[d-1] + '%' },
             ].map(row => (
-              <div key={row.label} className={`flex border-b border-slate-100 ${row.bgClass} ${row.fgClass}`}>
-                <div className={`w-56 flex-shrink-0 flex items-center justify-end px-4 py-2 text-xs font-bold uppercase tracking-wider sticky left-0 z-20 ${row.bgClass} border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]`}>
+              <div key={row.label} className={`grid border-b border-slate-100 ${row.bgClass} ${row.fgClass}`} style={{ gridTemplateColumns: gridTemplate }}>
+                <div className={`flex items-center justify-end px-4 py-2 text-xs font-bold uppercase tracking-wider sticky left-0 z-20 ${row.bgClass} border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]`}>
                   {row.label}
                 </div>
                 {days.map(d => (
-                  <div key={d} className="flex-1 text-center py-2 text-sm font-semibold border-r border-slate-100/50"
-                       style={{ minWidth: 40 }}>
+                  <div key={d} className="flex items-center justify-center py-2 text-sm font-semibold border-r border-slate-100/50">
                     {row.val(d)}
                   </div>
                 ))}
@@ -208,13 +208,13 @@ export default function Tracker() {
             ))}
 
             {/* Week headers */}
-            <div className="flex border-b border-slate-200">
-              <div className="w-56 flex-shrink-0 bg-slate-50 text-slate-500 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 flex items-center sticky left-0 z-20 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Goal</div>
+            <div className="grid border-b border-slate-200" style={{ gridTemplateColumns: gridTemplate }}>
+              <div className="bg-slate-50 text-slate-500 text-[10px] font-bold tracking-widest uppercase px-4 py-2.5 flex items-center sticky left-0 z-20 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Goal</div>
               {weekGroups.map((wg, wi) => {
                 const span  = wg.end - wg.start + 1
                 return (
                   <div key={wi} className="flex items-center justify-center py-2 text-xs font-bold uppercase tracking-wider border-r border-slate-200 bg-slate-50 text-indigo-600"
-                       style={{ flex: span, minWidth: span * 40 }}>
+                       style={{ gridColumn: `span ${span}` }}>
                     Week {wi + 1}
                   </div>
                 )
@@ -222,13 +222,12 @@ export default function Tracker() {
             </div>
 
             {/* Day name row */}
-            <div className="flex border-b border-slate-100">
-              <div className="w-56 flex-shrink-0 bg-white sticky left-0 z-20 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" />
+            <div className="grid border-b border-slate-100" style={{ gridTemplateColumns: gridTemplate }}>
+              <div className="bg-white sticky left-0 z-20 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" />
               {days.map(d => {
                 const dow = (firstDow + d - 1) % 7
                 return (
-                  <div key={d} className="flex-1 text-center py-1.5 text-[10px] font-bold border-r border-slate-100 bg-slate-50 text-slate-500 uppercase tracking-widest"
-                       style={{ minWidth: 40 }}>
+                  <div key={d} className="flex items-center justify-center py-1.5 text-[10px] font-bold border-r border-slate-100 bg-slate-50 text-slate-500 uppercase tracking-widest">
                     {DOW[dow]}
                   </div>
                 )
@@ -236,13 +235,12 @@ export default function Tracker() {
             </div>
 
             {/* Day number row */}
-            <div className="flex border-b border-slate-200 shadow-sm relative z-20">
-              <div className="w-56 flex-shrink-0 bg-white sticky left-0 z-30 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" />
+            <div className="grid border-b border-slate-200 shadow-sm relative z-20" style={{ gridTemplateColumns: gridTemplate }}>
+              <div className="bg-white sticky left-0 z-30 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]" />
               {days.map(d => {
                 const isToday = format(new Date(), 'yyyy-MM-dd') === `${monthKey}-${String(d).padStart(2,'0')}`
                 return (
-                  <div key={d} className="flex-1 text-center py-2 text-sm font-bold border-r border-slate-200 bg-white text-slate-900"
-                       style={{ minWidth: 40 }}>
+                  <div key={d} className="flex items-center justify-center py-2 text-sm font-bold border-r border-slate-200 bg-white text-slate-900">
                     <span className={isToday ? 'inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-600 text-white shadow-sm' : ''}>
                       {d}
                     </span>
@@ -255,8 +253,8 @@ export default function Tracker() {
             {habits.map((habit, hi) => {
               const bgClass = hi % 2 === 0 ? 'bg-white' : 'bg-slate-50'
               return (
-                <div key={habit._id} className="flex border-b border-slate-200 hover:bg-slate-50 transition-colors group">
-                  <div className={`w-56 flex-shrink-0 flex items-center gap-3 px-4 py-3 border-r border-slate-200 text-sm font-semibold text-slate-900 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] ${bgClass} group-hover:bg-slate-50`}>
+                <div key={habit._id} className="grid border-b border-slate-200 hover:bg-slate-50 transition-colors group" style={{ gridTemplateColumns: gridTemplate }}>
+                  <div className={`flex items-center gap-3 px-4 py-3 border-r border-slate-200 text-sm font-semibold text-slate-900 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] ${bgClass} group-hover:bg-slate-50`}>
                     <span className="text-xl">{habit.icon}</span>
                     <span className="truncate flex-1 pr-6">{habit.name}</span>
                     <button onClick={() => setEditingHabit(habit)} className="opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-slate-200 rounded-md absolute right-2 text-slate-500">
@@ -269,8 +267,8 @@ export default function Tracker() {
                     const isSaving = saving[`${habit._id}-${d}`]
                     return (
                       <div key={d} onClick={() => toggleTick(habit._id, d)}
-                           className={`flex-1 flex items-center justify-center border-r border-slate-200 cursor-pointer transition-colors ${checked ? 'bg-indigo-50' : bgClass}`}
-                           style={{ minWidth: 40, height: 52 }}>
+                           className={`flex items-center justify-center border-r border-slate-200 cursor-pointer transition-colors ${checked ? 'bg-indigo-50' : bgClass}`}
+                           style={{ height: 52 }}>
                         {isSaving
                           ? <Loader2 size={16} className="animate-spin text-indigo-400" />
                           : checked
@@ -287,8 +285,8 @@ export default function Tracker() {
             })}
 
             {/* Add habit row */}
-            <div className="flex border-b border-slate-200">
-              <div className="w-56 flex-shrink-0 flex items-center gap-2 px-4 py-3 border-r border-slate-200 bg-slate-50 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
+            <div className="grid border-b border-slate-200" style={{ gridTemplateColumns: gridTemplate }}>
+              <div className="flex items-center gap-2 px-4 py-3 border-r border-slate-200 bg-slate-50 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                 <input value={newHabit} onChange={e => setNewHabit(e.target.value)}
                        onKeyDown={e => e.key === 'Enter' && addHabit()}
                        placeholder="+ Add a habit…"
@@ -298,21 +296,21 @@ export default function Tracker() {
                           className="text-[10px] text-white font-bold flex-shrink-0 px-2 py-1 bg-indigo-600 rounded hover:bg-indigo-700 transition-colors uppercase tracking-wider">Add</button>
                 )}
               </div>
-              {days.map(d => <div key={d} className="flex-1 border-r border-slate-200 bg-slate-50" style={{ minWidth: 40, height: 48 }} />)}
+              {days.map(d => <div key={d} className="border-r border-slate-200 bg-slate-50" style={{ height: 48 }} />)}
             </div>
 
             {/* Mood row */}
             <div className="bg-slate-50">
-              <div className="flex">
-                <div className="w-56 flex-shrink-0 flex items-center px-4 py-3 border-r border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-widest sticky left-0 z-20 bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
+              <div className="grid" style={{ gridTemplateColumns: gridTemplate }}>
+                <div className="flex items-center px-4 py-3 border-r border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-widest sticky left-0 z-20 bg-slate-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                   <span className="mr-2 text-base">✨</span> Daily Mood
                 </div>
                 {days.map(d => {
                   const dateKey = `${monthKey}-${String(d).padStart(2,'0')}`
                   const mood = logs[dateKey]?.mood || ''
                   return (
-                    <div key={d} className="flex-1 relative flex items-center justify-center border-r border-slate-200 cursor-pointer hover:bg-indigo-50 transition-colors"
-                         style={{ minWidth: 40, height: 48 }}
+                    <div key={d} className="relative flex items-center justify-center border-r border-slate-200 cursor-pointer hover:bg-indigo-50 transition-colors"
+                         style={{ height: 48 }}
                          onClick={() => setMoodPicker(moodPicker === d ? null : d)}>
                       <span className="text-xl leading-none">{mood || <span className="text-slate-300 text-[10px]">·</span>}</span>
                       {moodPicker === d && (
