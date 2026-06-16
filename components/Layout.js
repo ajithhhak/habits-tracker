@@ -3,13 +3,14 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LayoutDashboard, CheckSquare, Calendar as CalendarIcon, User, LogOut, Menu, X, Flame, Sparkles } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Calendar as CalendarIcon, User, LogOut, Menu, X, Flame, Sparkles, Info } from 'lucide-react'
 
 const NAV = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/tracker', icon: CheckSquare, label: 'Habit Tracker' },
   { href: '/calendar', icon: CalendarIcon, label: 'Calendar' },
   { href: '/profile', icon: User, label: 'Profile' },
+  { href: '/about', icon: Info, label: 'About Us' },
 ]
 
 export default function Layout({ children, user, onUserUpdate }) {
