@@ -5,6 +5,8 @@ import Layout from '../components/Layout'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, CheckSquare, Loader2, Settings, Trash2, X } from 'lucide-react'
+import Confetti from 'react-confetti'
+import { useWindowSize } from 'react-use'
 
 // Removed static week themes, we will use Tailwind CSS directly
 
@@ -21,6 +23,8 @@ export default function Tracker() {
   const [addingHabit, setAddingHabit] = useState(false)
   const [moodPicker, setMoodPicker] = useState(null) // day number
   const [editingHabit, setEditingHabit] = useState(null)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const { width, height } = useWindowSize()
 
   const monthKey  = format(currentDate, 'yyyy-MM')
   const daysInMonth = getDaysInMonth(currentDate)
@@ -66,13 +70,22 @@ export default function Tracker() {
     const newVal  = !current
 
     // Optimistic update
+    const newTicks = { ...(logs[dateKey]?.ticks || {}), [habitId]: newVal }
     setLogs(prev => ({
       ...prev,
       [dateKey]: {
         ...prev[dateKey],
-        ticks: { ...(prev[dateKey]?.ticks || {}), [habitId]: newVal }
+        ticks: newTicks
       }
     }))
+
+    if (newVal === true) {
+      const completedCount = Object.values(newTicks).filter(Boolean).length
+      if (habits.length > 0 && completedCount === habits.length) {
+        setShowConfetti(true)
+        setTimeout(() => setShowConfetti(false), 5000)
+      }
+    }
 
     setSaving(s => ({ ...s, [`${habitId}-${day}`]: true }))
     try {
@@ -147,6 +160,7 @@ export default function Tracker() {
 
   return (
     <Layout user={user}>
+      {showConfetti && <Confetti width={width} height={height} recycle={false} numberOfPieces={500} gravity={0.15} className="z-[100]" />}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
         {/* Month nav */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

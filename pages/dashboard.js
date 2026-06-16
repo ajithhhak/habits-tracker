@@ -80,6 +80,29 @@ export default function Dashboard() {
           <StatCard icon={Star} label="Monthly Average" value={`${stats?.avgPct ?? 0}%`} sub="Completion rate" color="purple" />
         </motion.div>
 
+        {/* Smart Insights */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="card bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 backdrop-blur-md border border-indigo-100 dark:border-indigo-800/30">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white dark:bg-surface-800 shadow-sm flex items-center justify-center flex-shrink-0 text-indigo-500">
+              <Star size={24} className="fill-indigo-500/20" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-200 mb-1">Smart Insights</h3>
+              <p className="text-sm font-medium text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed">
+                {stats?.todayPct === 100 
+                  ? "Incredible work! You've crushed all your habits today. Keep this momentum going!"
+                  : stats?.user?.streak >= 3
+                  ? `Your streak is on fire at ${stats.user.streak} days! Consistency is your superpower right now.`
+                  : stats?.avgPct < 40 && stats?.totalHabits > 0
+                  ? "Building habits takes time. If you're struggling, try scaling back your goals slightly to build momentum."
+                  : stats?.daysTracked > 0
+                  ? "You're making steady progress. Keep showing up—every single checkmark counts!"
+                  : "Start logging your habits today to unlock personalized insights and trends here."}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Chart */}
         <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="card bg-white/60 dark:bg-surface-900/60 backdrop-blur-md border border-white/40 dark:border-surface-700/50">
           <div className="flex items-center justify-between mb-8">

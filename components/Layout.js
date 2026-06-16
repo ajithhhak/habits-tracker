@@ -115,7 +115,12 @@ export default function Layout({ children, user, onUserUpdate }) {
       </AnimatePresence>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      <div className="flex-1 flex flex-col overflow-hidden relative bg-surface-50 dark:bg-surface-950">
+        
+        {/* Ambient background glows */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-400/20 dark:bg-brand-500/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-400/20 dark:bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none translate-y-1/4 -translate-x-1/4 z-0" />
+
         {/* Top bar */}
         <header className="bg-white/70 dark:bg-surface-900/70 backdrop-blur-xl border-b border-surface-200 dark:border-surface-800 px-4 md:px-8 h-16 flex items-center justify-between flex-shrink-0 z-30 sticky top-0">
           <button className="md:hidden p-2 -ml-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-600 dark:text-surface-300 transition-colors"
@@ -149,7 +154,7 @@ export default function Layout({ children, user, onUserUpdate }) {
         </header>
 
         {/* Page content with page transition */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-surface-50 dark:bg-surface-950">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 relative z-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={router.pathname}

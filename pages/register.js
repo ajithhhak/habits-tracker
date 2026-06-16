@@ -4,6 +4,7 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { User, Mail, Phone, Lock, ImagePlus, ArrowRight, AlertTriangle, Loader2 } from 'lucide-react'
+import CursorBackground from '../components/CursorBackground'
 
 export default function Register() {
   const router = useRouter()
@@ -81,9 +82,8 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex items-center justify-center p-4 py-12 relative overflow-hidden transition-colors duration-300">
       
-      {/* Background Blobs */}
-      <div className="absolute top-[-5%] right-[-5%] w-[35rem] h-[35rem] bg-brand-400/20 dark:bg-brand-600/20 rounded-full blur-3xl animate-pulse-slow" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[25rem] h-[25rem] bg-indigo-400/20 dark:bg-indigo-900/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+      {/* Dynamic Cursor Background */}
+      <CursorBackground />
 
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
