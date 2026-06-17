@@ -1,7 +1,7 @@
 import Layout from '../components/Layout'
 import { motion } from 'framer-motion'
 import { useAuth } from '../lib/useAuth'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Globe } from 'lucide-react'
 
 const GithubIcon = ({ size, className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -89,6 +89,9 @@ export default function About() {
               </p>
 
               <div className="flex items-center gap-4 mb-10">
+                <a href="https://ajithkumarch.vercel.app/" target="_blank" rel="noreferrer" title="Personal Website" className="w-14 h-14 rounded-full bg-violet-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-md">
+                  <Globe size={28} />
+                </a>
                 <a href="https://www.linkedin.com/in/ajith-kumar-choudoju-37181a2b7" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full bg-[#0077b5] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-md">
                   <LinkedinIcon size={28} />
                 </a>
