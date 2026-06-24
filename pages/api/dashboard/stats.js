@@ -52,7 +52,7 @@ export default requireAuth(async function handler(req, res) {
   const todayLog = await HabitLog.findOne({ userId, date: today })
 
   res.status(200).json({
-    user: { streak: user.streak, longestStreak: user.longestStreak, joinedAt: user.joinedAt },
+    user: { name: user.name, streak: user.streak, longestStreak: user.longestStreak, joinedAt: user.joinedAt },
     todayPct: todayLog?.pct || 0,
     todayCompleted: todayLog?.completedCount || 0,
     totalHabits: habits.length,

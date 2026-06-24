@@ -11,6 +11,7 @@ import { useWindowSize } from 'react-use'
 // Removed static week themes, we will use Tailwind CSS directly
 
 const MOODS = ['😊','😄','😐','😞','😴','😤','🥰']
+const ICONS = ['⭐','🔥','💧','🏃','📚','🧘','💪','🍎','💻','🎨','🎵','🧹','💸','💊','🌿','✨', '📝', '🦷', '🍳', '🚴']
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 
 export default function Tracker() {
@@ -316,17 +317,18 @@ export default function Tracker() {
                   const mood = logs[dateKey]?.mood || ''
                   return (
                     <div key={d} className="relative flex items-center justify-center border-r border-slate-200 cursor-pointer hover:bg-indigo-50 transition-colors"
-                         style={{ height: 48 }}
-                         onClick={() => setMoodPicker(moodPicker === d ? null : d)} style={{ background: 'inherit' }}>
+                         style={{ height: 48, background: 'inherit' }}
+                         onClick={() => setMoodPicker(moodPicker === d ? null : d)}>
                       <span className="text-xl leading-none">{mood || <span className="text-slate-300 text-[10px]">·</span>}</span>
                       {moodPicker === d && (
-                        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50
-                                        bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 flex gap-1 whitespace-nowrap animate-fade-in"
+                        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-50
+                                        bg-white border border-slate-200 rounded-xl shadow-xl p-2 flex flex-col gap-2 animate-fade-in"
                              onClick={e => e.stopPropagation()}>
                           {MOODS.map(m => (
                             <button key={m} onClick={() => setMood(d, m)}
-                                    className="text-2xl hover:scale-125 transition-transform p-1">{m}</button>
+                                    className="text-2xl hover:bg-slate-50 rounded-lg transition-colors p-1.5">{m}</button>
                           ))}
+                          <button onClick={() => setMood(d, '')} className="text-xs font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-md py-1 mt-1 transition-colors">Clear</button>
                         </div>
                       )}
                     </div>
@@ -361,7 +363,18 @@ export default function Tracker() {
                 </div>
                 <div>
                   <label className="text-sm font-semibold text-slate-700 block mb-1">Icon</label>
-                  <input value={editingHabit.icon} onChange={e => setEditingHabit({...editingHabit, icon: e.target.value})} className="input py-2 w-16 text-center text-xl" maxLength={2} />
+                  <select 
+                    value={editingHabit.icon || ''} 
+                    onChange={e => setEditingHabit({...editingHabit, icon: e.target.value})} 
+                    className="input py-2 w-full text-xl cursor-pointer"
+                  >
+                    {editingHabit.icon && !ICONS.includes(editingHabit.icon) && (
+                      <option value={editingHabit.icon}>{editingHabit.icon}</option>
+                    )}
+                    {ICONS.map(icon => (
+                      <option key={icon} value={icon}>{icon}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="p-4 border-t border-slate-100 flex justify-between bg-slate-50 items-center">

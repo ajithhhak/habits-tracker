@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     const token = signToken({ id: user._id, email: user.email, name: user.name })
     setAuthCookie(res, token)
 
-    return res.status(200).json({ user: user.toSafeObject() })
+    return res.status(200).json({ user: user.toSafeObject(), token })
 
   } catch (err) {
     console.error('LOGIN ERROR:', err)

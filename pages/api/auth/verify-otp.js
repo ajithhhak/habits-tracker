@@ -44,5 +44,5 @@ export default async function handler(req, res) {
   const token = signToken({ id: user._id, email: user.email, name: user.name })
   setAuthCookie(res, token)
 
-  res.status(200).json({ message: 'Verified!', user: user.toSafeObject() })
+  res.status(200).json({ message: 'Verified!', user: user.toSafeObject(), token })
 }
