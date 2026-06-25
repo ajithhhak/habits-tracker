@@ -9,7 +9,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_URL = process.env.EXPO_PUBLIC_API_URL || (Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000');
+  const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://habitsyncc.vercel.app';
 
   async function handleSubmit() {
     setError('');

@@ -9,7 +9,7 @@ const MOODS = ['Happy', 'Excited', 'Neutral', 'Sad', 'Tired', 'Stressed', 'Grate
 const ICONS = ['⭐','🔥','💧','🏃','📚','🧘','💪','🍎','💻','🎨','🎵','🧹','💸','💊','🌿','✨','📝','🦷','🍳','🚴'];
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || (Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000');
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://habitsyncc.vercel.app';
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
