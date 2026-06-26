@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LayoutDashboard, CheckSquare, Calendar as CalendarIcon, User, LogOut, Menu, X, Flame, Sparkles, Info } from 'lucide-react'
+import { LayoutDashboard, CheckSquare, Calendar as CalendarIcon, User, LogOut, Menu, X, Flame, Sparkles, Info, Smartphone } from 'lucide-react'
 
 const NAV = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -35,8 +35,8 @@ export default function Layout({ children, user, onUserUpdate }) {
         <div className="p-6 border-b border-white/10 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl
-                            flex items-center justify-center shadow-lg border border-white/20">
-              <Sparkles className="text-white" size={22} />
+                            flex items-center justify-center shadow-lg border border-white/20 overflow-hidden p-1">
+              <img src="/logo_main.png" alt="HabitSync" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="font-extrabold text-xl tracking-tight text-white">HabitSync</div>
@@ -93,10 +93,14 @@ export default function Layout({ children, user, onUserUpdate }) {
           })}
         </nav>
 
-        {/* Logout */}
+        {/* Logout and Download */}
         <div className="p-4 mb-4">
+          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+                       bg-white text-[#7c3aed] hover:bg-white/90 w-full transition-all duration-200 mb-3 shadow-lg justify-center">
+            <Smartphone size={18} /> Download App
+          </a>
           <button onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold justify-center
                        text-white/60 hover:text-white hover:bg-white/10 w-full transition-all duration-200">
             <LogOut size={20} /> Sign Out
           </button>

@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
-import { View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
+import { useState, useCallback } from 'react';
+import { View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Dimensions, Image } from 'react-native';
 import { Text } from "@/components/CustomText";
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/hooks/use-theme';
+import { LineChart } from 'react-native-chart-kit';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://habitsyncc.vercel.app';
+const API_URL = 'https://habitsyncc.vercel.app';
+const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
+  const { colors, theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   async function loadData() {
     try {
@@ -39,9 +45,9 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#7c3aed" />
-        <Text style={styles.loadingText}>Loading dashboard...</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={[styles.loadingText, { color: colors.primary }]}>Loading dashboard...</Text>
       </View>
     );
   }
@@ -63,108 +69,159 @@ export default function Dashboard() {
     ? "You're making steady progress. Keep showing up—every single checkmark counts!"
     : "Start logging your habits today to unlock personalized insights and trends here.";
 
+  const chartDataRaw = stats?.chartData?.slice(-14) || [];
+  const chartLabels = chartDataRaw.map((d: any) => d.label?.split('/')[1] || '');
+  const chartValues = chartDataRaw.map((d: any) => d.pct || 0);
+
+  // Fallback if no data
+  const hasChartData = chartValues.length > 0;
+  const lineChartData = {
+    labels: hasChartData ? chartLabels : ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+    datasets: [{ data: hasChartData ? chartValues : [0, 0, 0, 0, 0, 0, 0] }]
+  };
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.greeting}>Good {greeting},</Text>
-            <Text style={styles.userName}>{capitalizedName}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+            <Image 
+              source={require('../../../assets/images/logo_main.png')} 
+              style={styles.appLogo}
+              resizeMode="contain"
+            />
+            <View>
+              <Text style={[styles.greeting, { color: colors.textSecondary }]}>Good {greeting},</Text>
+              <Text style={[styles.userName, { color: colors.text }]}>{capitalizedName}</Text>
+            </View>
           </View>
           <View style={{ flexDirection: 'row', gap: 12 }}>
-            <TouchableOpacity style={styles.settingsBtn} onPress={() => router.push('/about')}>
-              <Ionicons name="information-circle-outline" size={22} color="#7c3aed" />
+            <TouchableOpacity style={[styles.settingsBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={toggleTheme}>
+              <Ionicons name={theme === 'dark' ? 'sunny' : 'moon'} size={22} color={colors.primary} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsBtn} onPress={() => router.push('/(tabs)/profile')}>
-              <Ionicons name="settings-outline" size={22} color="#64748b" />
+            <TouchableOpacity style={[styles.settingsBtn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={() => router.push('/about')}>
+              <Ionicons name="information-circle-outline" size={22} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={styles.subtitle}>Welcome back. Here is your habit performance overview.</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Welcome back. Here is your habit performance overview.</Text>
       </View>
 
       <View style={styles.statsGrid}>
         {[
-          { value: `${stats?.user?.streak ?? 0}d`, label: 'CURRENT STREAK', color: '#f97316' },
-          { value: `${stats?.todayPct ?? 0}%`, label: "TODAY'S PROGRESS", color: '#10b981' },
-          { value: `${stats?.daysTracked ?? 0}`, label: 'DAYS TRACKED', color: '#8b5cf6' },
-          { value: `${stats?.avgPct ?? 0}%`, label: 'MONTHLY AVG', color: '#ec4899' },
+          { value: `${stats?.user?.streak ?? 0}d`, label: 'CURRENT STREAK', color: colors.warning },
+          { value: `${stats?.todayPct ?? 0}%`, label: "TODAY'S PROGRESS", color: colors.success },
+          { value: `${stats?.daysTracked ?? 0}`, label: 'DAYS TRACKED', color: colors.primary },
+          { value: `${stats?.avgPct ?? 0}%`, label: 'MONTHLY AVG', color: colors.danger },
         ].map((s, i) => (
-          <View key={i} style={[styles.statCard, { backgroundColor: s.color }]}>
+          <TouchableOpacity 
+            key={i} 
+            style={[styles.statCard, { backgroundColor: s.color }]}
+            activeOpacity={s.label.includes('STREAK') ? 0.7 : 1}
+            onPress={() => {
+              if (s.label.includes('STREAK')) {
+                import('react-native').then(({ Alert }) => {
+                  Alert.alert(
+                    'Streak Rules 📈', 
+                    '• Complete at least 50% of your habits to extend your streak.\n• Missing a day drops your current streak to 0.\n• Keep logging your progress!'
+                  );
+                });
+              }
+            }}
+          >
             <Text style={styles.statValue}>{s.value}</Text>
             <Text style={styles.statLabel}>{s.label}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
 
-      <View style={styles.insightsCard}>
+      <View style={[styles.insightsCard, { backgroundColor: colors.primaryLight, borderColor: colors.border }]}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-          <Ionicons name="sparkles" size={18} color="#8b5cf6" style={{ marginRight: 6 }} />
-          <Text style={styles.insightsTitle}>Smart Insights</Text>
+          <Ionicons name="sparkles" size={18} color={colors.primary} style={{ marginRight: 6 }} />
+          <Text style={[styles.insightsTitle, { color: colors.text }]}>Smart Insights</Text>
         </View>
-        <Text style={styles.insightsText}>{insightText}</Text>
+        <Text style={[styles.insightsText, { color: colors.textSecondary }]}>{insightText}</Text>
       </View>
 
-      {stats?.chartData && stats.chartData.length > 0 && (
-        <View style={styles.chartCard}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-            <Ionicons name="trending-up" size={18} color="#8b5cf6" style={{ marginRight: 6 }} />
-            <Text style={styles.chartTitle}>Daily Completion Rate</Text>
-          </View>
-          <Text style={styles.chartSub}>Last 30 days performance</Text>
-          <View style={styles.chartBarContainer}>
-            {stats.chartData.slice(-14).map((d: any, i: number) => (
-              <View key={i} style={styles.chartBarWrapper}>
-                <View style={[styles.chartBar, { height: Math.max(4, (d.pct / 100) * 80), backgroundColor: d.pct >= 80 ? '#10b981' : d.pct >= 50 ? '#f59e0b' : d.pct > 0 ? '#ef4444' : '#e2e8f0' }]} />
-                <Text style={styles.chartBarLabel}>{d.label?.split('/')[1] || ''}</Text>
-              </View>
-            ))}
-          </View>
+      <View style={[styles.chartCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+          <Ionicons name="trending-up" size={18} color={colors.primary} style={{ marginRight: 6 }} />
+          <Text style={[styles.chartTitle, { color: colors.text }]}>Daily Completion Rate</Text>
         </View>
-      )}
+        <Text style={[styles.chartSub, { color: colors.textSecondary }]}>Exponential progress tracking</Text>
+        
+        {hasChartData ? (
+          <LineChart
+            data={lineChartData}
+            width={width - 76}
+            height={180}
+            chartConfig={{
+              backgroundColor: colors.card,
+              backgroundGradientFrom: colors.card,
+              backgroundGradientTo: colors.card,
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(124, 58, 237, ${opacity})`,
+              labelColor: (opacity = 1) => colors.textSecondary,
+              style: { borderRadius: 16 },
+              propsForDots: {
+                r: "5",
+                strokeWidth: "2",
+                stroke: colors.primary
+              }
+            }}
+            bezier
+            style={{ marginVertical: 8, borderRadius: 16, alignSelf: 'center' }}
+            withInnerLines={false}
+            withOuterLines={false}
+          />
+        ) : (
+          <Text style={[styles.chartSub, { color: colors.textSecondary, textAlign: 'center', marginVertical: 20 }]}>Log habits to see your exponential growth curve here.</Text>
+        )}
+      </View>
 
       {stats?.habitStats && stats.habitStats.length > 0 && (
-        <View style={styles.habitStatsCard}>
-          <Text style={styles.habitStatsTitle}>Habit Performance</Text>
+        <View style={[styles.habitStatsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.habitStatsTitle, { color: colors.text }]}>Habit Performance</Text>
           {stats.habitStats.map((h: any) => (
             <View key={h.id} style={styles.habitRow}>
-              <View style={styles.habitIconBox}>
+              <View style={[styles.habitIconBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
                 <Text style={styles.habitIcon}>{h.icon}</Text>
               </View>
               <View style={styles.habitInfo}>
                 <View style={styles.habitInfoHeader}>
-                  <Text style={styles.habitName} numberOfLines={1}>{h.name}</Text>
-                  <Text style={styles.habitRate}>{h.rate}%</Text>
+                  <Text style={[styles.habitName, { color: colors.text }]} numberOfLines={1}>{h.name}</Text>
+                  <Text style={[styles.habitRate, { color: colors.primary }]}>{h.rate}%</Text>
                 </View>
-                <View style={styles.progressBarBg}>
-                  <View style={[styles.progressBarFill, { width: `${h.rate}%` }]} />
+                <View style={[styles.progressBarBg, { backgroundColor: colors.background }]}>
+                  <View style={[styles.progressBarFill, { width: `${h.rate}%`, backgroundColor: colors.primary }]} />
                 </View>
               </View>
-              <Text style={styles.habitDays}>{h.completedDays}/30</Text>
+              <Text style={[styles.habitDays, { color: colors.textSecondary }]}>{h.completedDays}/30</Text>
             </View>
           ))}
         </View>
       )}
 
-      <View style={{ height: 20 }} />
+      <View style={{ height: 40 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ffffff' },
-  loadingText: { marginTop: 12, color: '#7c3aed', fontWeight: '600' },
-  container: { flex: 1, backgroundColor: '#ffffff' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 12, fontWeight: '600' },
+  container: { flex: 1 },
   content: { padding: 20, paddingTop: 56 },
   header: { marginBottom: 24 },
-  headerRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  greeting: { fontSize: 22, fontWeight: '600', color: '#1e293b' },
-  userName: { fontSize: 30, fontWeight: '900', color: '#7c3aed', marginTop: 2 },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  appLogo: { width: 44, height: 44, marginRight: 12 },
+  greeting: { fontSize: 16, fontWeight: '600' },
+  userName: { fontSize: 26, fontWeight: '900', marginTop: -2 },
   settingsBtn: {
-    width: 44, height: 44, borderRadius: 22, backgroundColor: '#f8fafc',
-    justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#e2e8f0',
+    width: 44, height: 44, borderRadius: 22,
+    justifyContent: 'center', alignItems: 'center', borderWidth: 1,
   },
-  subtitle: { fontSize: 14, color: '#64748b', marginTop: 8 },
+  subtitle: { fontSize: 13, marginTop: 12 },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 20 },
   statCard: {
     width: '48%', borderRadius: 16, padding: 18, marginBottom: 12,
@@ -172,38 +229,22 @@ const styles = StyleSheet.create({
   },
   statValue: { fontSize: 26, fontWeight: '800', color: '#fff', marginBottom: 4 },
   statLabel: { fontSize: 10, fontWeight: '700', color: 'rgba(255,255,255,0.85)', letterSpacing: 0.5 },
-  insightsCard: {
-    backgroundColor: '#faf5ff', borderRadius: 16, padding: 18,
-    borderWidth: 1, borderColor: '#e9d5ff', marginBottom: 20,
-  },
-  insightsTitle: { fontSize: 16, fontWeight: '700', color: '#1e293b' },
-  insightsText: { fontSize: 14, color: '#475569', lineHeight: 21 },
-  chartCard: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 18,
-    borderWidth: 1, borderColor: '#f1f5f9', marginBottom: 20,
-  },
-  chartTitle: { fontSize: 16, fontWeight: '700', color: '#1e293b' },
-  chartSub: { fontSize: 11, fontWeight: '600', color: '#94a3b8', marginBottom: 16, textTransform: 'uppercase', letterSpacing: 0.5 },
-  chartBarContainer: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: 100 },
-  chartBarWrapper: { alignItems: 'center', flex: 1, marginHorizontal: 1 },
-  chartBar: { width: 10, borderRadius: 5, minHeight: 4 },
-  chartBarLabel: { fontSize: 8, color: '#94a3b8', marginTop: 4, fontWeight: '600' },
-  habitStatsCard: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 18,
-    borderWidth: 1, borderColor: '#f1f5f9',
-  },
-  habitStatsTitle: { fontSize: 18, fontWeight: '700', color: '#1e293b', marginBottom: 16 },
+  insightsCard: { borderRadius: 16, padding: 18, borderWidth: 1, marginBottom: 20 },
+  insightsTitle: { fontSize: 16, fontWeight: '700' },
+  insightsText: { fontSize: 14, lineHeight: 21 },
+  chartCard: { borderRadius: 16, padding: 18, borderWidth: 1, marginBottom: 20 },
+  chartTitle: { fontSize: 16, fontWeight: '700' },
+  chartSub: { fontSize: 11, fontWeight: '600', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 },
+  habitStatsCard: { borderRadius: 16, padding: 18, borderWidth: 1 },
+  habitStatsTitle: { fontSize: 18, fontWeight: '700', marginBottom: 16 },
   habitRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  habitIconBox: {
-    width: 42, height: 42, backgroundColor: '#f8fafc', borderRadius: 12,
-    borderWidth: 1, borderColor: '#e2e8f0', justifyContent: 'center', alignItems: 'center', marginRight: 12,
-  },
+  habitIconBox: { width: 42, height: 42, borderRadius: 12, borderWidth: 1, justifyContent: 'center', alignItems: 'center', marginRight: 12 },
   habitIcon: { fontSize: 20 },
   habitInfo: { flex: 1, marginRight: 12 },
   habitInfoHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
-  habitName: { fontSize: 14, fontWeight: '600', color: '#1e293b', flex: 1 },
-  habitRate: { fontSize: 14, fontWeight: '700', color: '#7c3aed' },
-  progressBarBg: { height: 6, backgroundColor: '#f1f5f9', borderRadius: 3, overflow: 'hidden' },
-  progressBarFill: { height: '100%', backgroundColor: '#7c3aed', borderRadius: 3 },
-  habitDays: { fontSize: 11, fontWeight: '600', color: '#64748b', width: 36, textAlign: 'right' },
+  habitName: { fontSize: 14, fontWeight: '600', flex: 1 },
+  habitRate: { fontSize: 14, fontWeight: '700' },
+  progressBarBg: { height: 6, borderRadius: 3, overflow: 'hidden' },
+  progressBarFill: { height: '100%', borderRadius: 3 },
+  habitDays: { fontSize: 11, fontWeight: '600', width: 36, textAlign: 'right' },
 });

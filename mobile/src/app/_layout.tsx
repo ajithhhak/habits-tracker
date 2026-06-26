@@ -11,6 +11,7 @@ import {
   Inter_800ExtraBold, 
   Inter_900Black 
 } from '@expo-google-fonts/inter';
+import { ThemeProvider } from '@/hooks/use-theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,15 +36,16 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <StatusBar style="dark" />
+    <ThemeProvider>
+      <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="login" />
         <Stack.Screen name="register" />
         <Stack.Screen name="verify-otp" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="about" />
       </Stack>
-    </>
+    </ThemeProvider>
   );
 }

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { Mail, Lock, ArrowRight, AlertTriangle, Loader2, Sparkles } from 'lucide-react'
+import { Mail, Lock, ArrowRight, AlertTriangle, Loader2, Sparkles, Smartphone } from 'lucide-react'
 
 export default function Login() {
   const router = useRouter()
@@ -69,6 +69,12 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
+      
+      {/* Top Right Download Button */}
+      <a href="#" className="absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold bg-white text-[#7c3aed] hover:scale-105 shadow-md transition-transform duration-200 border border-purple-100">
+        <Smartphone size={16} /> Download App
+      </a>
+
       {/* Decorative blobs */}
       <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full opacity-30 blur-3xl" style={{ background: 'radial-gradient(circle, #c4b5fd, transparent 70%)' }} />
       <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full opacity-25 blur-3xl" style={{ background: 'radial-gradient(circle, #f0abfc, transparent 70%)' }} />
@@ -80,9 +86,10 @@ export default function Login() {
         className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-6"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #d946ef)' }}>
-            <Sparkles className="text-white" size={28} />
+          <div className="flex justify-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-tr from-[#7c3aed] to-[#5b21b6] rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30 overflow-hidden p-1.5 border border-white/10">
+              <img src="/logo_main.png" alt="HabitSync" className="w-full h-full object-contain" />
+            </div>
           </div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Sign in to HabitSync</h1>
           <p className="text-slate-500 mt-2 text-sm font-medium">Welcome back, please enter your details.</p>

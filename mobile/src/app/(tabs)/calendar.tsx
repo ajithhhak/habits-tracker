@@ -1,53 +1,40 @@
-import { useState, useEffect } from 'react';
-import { View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Platform } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
+import { View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Text } from "@/components/CustomText";
 import * as SecureStore from 'expo-secure-store';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@/hooks/use-theme';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://habitsyncc.vercel.app';
+const API_URL = 'https://habitsyncc.vercel.app';
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
 }
-function getFirstDow(year: number, month: number) {
+function getFirstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 function formatMonth(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
-function getMonthName(date: Date) {
-  return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-}
-function formatDateStr(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
-
-function getPctStyle(pct: number) {
-  if (pct >= 80) return { bg: '#dcfce7', border: '#22c55e', text: '#15803d' };
-  if (pct >= 50) return { bg: '#fef9c3', border: '#eab308', text: '#a16207' };
-  if (pct > 0) return { bg: '#fee2e2', border: '#ef4444', text: '#b91c1c' };
-  return { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8' };
-}
 
 export default function CalendarScreen() {
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [logs, setLogs] = useState<Record<string, any>>({});
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
   const monthKey = formatMonth(currentDate);
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDow = getFirstDow(year, month);
-  const todayStr = formatDateStr(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
-  useEffect(() => { loadCalendar(); }, [monthKey]);
+  useFocusEffect(
+    useCallback(() => {
+      loadCalendar();
+    }, [monthKey])
+  );
 
   async function loadCalendar() {
-    setLoading(true);
     try {
       const token = await SecureStore.getItemAsync('jwt');
       if (!token) { router.replace('/login'); return; }
@@ -62,169 +49,176 @@ export default function CalendarScreen() {
         (data.logs || []).forEach((l: any) => { map[l.date] = l; });
         setLogs(map);
       }
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
+
+  function prevMonth() { setCurrentDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1)); }
+  function nextMonth() { setCurrentDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1)); }
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#7c3aed" />
-        <Text style={styles.loadingText}>Loading calendar...</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
-  const blanks = Array.from({ length: firstDow });
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const daysInMonth = getDaysInMonth(year, month);
+  const firstDay = getFirstDayOfMonth(year, month);
+  const todayStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
+
+  const blanks = Array.from({ length: firstDay }, (_, i) => i);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
+  const selectedData = selectedDate ? logs[selectedDate] : null;
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>📅 {getMonthName(currentDate)}</Text>
-        <Text style={styles.subtitle}>Monthly habit overview</Text>
-        <View style={styles.monthNav}>
-          <TouchableOpacity style={styles.navBtn} onPress={() => setCurrentDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}>
-            <Ionicons name="chevron-back" size={14} color="#475569" style={{ marginRight: 4 }} />
-            <Text style={styles.navBtnText}>Prev</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navBtn} onPress={() => setCurrentDate(new Date())}>
-            <Text style={[styles.navBtnText, { fontWeight: '700' }]}>Today</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navBtn} onPress={() => setCurrentDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}>
-            <Text style={styles.navBtnText}>Next</Text>
-            <Ionicons name="chevron-forward" size={14} color="#475569" style={{ marginLeft: 4 }} />
-          </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="calendar-outline" size={28} color={colors.primary} style={{ marginRight: 8 }} />
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Calendar</Text>
         </View>
+        <Text style={[styles.headerSub, { color: colors.textSecondary }]}>View your habit history and moods</Text>
       </View>
 
-      <View style={styles.legend}>
-        {[
-          { color: '#22c55e', bg: '#dcfce7', label: '80%+ done' },
-          { color: '#eab308', bg: '#fef9c3', label: '50–79%' },
-          { color: '#ef4444', bg: '#fee2e2', label: '1–49%' },
-          { color: '#e2e8f0', bg: '#f8fafc', label: 'No data' },
-        ].map(l => (
-          <View key={l.label} style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: l.bg, borderColor: l.color }]} />
-            <Text style={styles.legendText}>{l.label}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.dowRow}>
-        {DOW.map(d => (
-          <View key={d} style={styles.dowCell}>
-            <Text style={styles.dowText}>{d}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.calendarGrid}>
-        {blanks.map((_, i) => <View key={`b${i}`} style={styles.dayCell} />)}
-        {days.map(d => {
-          const dateKey = formatDateStr(year, month, d);
-          const log = logs[dateKey];
-          const pct = log?.pct || 0;
-          const mood = log?.mood || '';
-          const style = getPctStyle(pct);
-          const isToday = dateKey === todayStr;
-          const isSelected = selected === dateKey;
-
-          return (
-            <TouchableOpacity
-              key={d}
-              style={[
-                styles.dayCell,
-                { backgroundColor: style.bg, borderColor: isToday ? '#7c3aed' : style.border, borderWidth: isToday ? 2 : 1 },
-                isSelected && { borderColor: '#7c3aed', borderWidth: 2, transform: [{ scale: 1.05 }] },
-              ]}
-              onPress={() => setSelected(isSelected ? null : dateKey)}
-            >
-              <View style={styles.dayCellTop}>
-                <Text style={[styles.dayNum, { color: isToday ? '#7c3aed' : style.text }]}>{d}</Text>
-                {mood ? <Text style={styles.dayMood}>{mood ? mood.substring(0,2) : ''}</Text> : null}
-              </View>
-              {pct > 0 && (
-                <View style={styles.dayProgress}>
-                  <View style={styles.dayProgressBg}>
-                    <View style={[styles.dayProgressFill, { width: `${pct}%`, backgroundColor: style.border }]} />
-                  </View>
-                  <Text style={[styles.dayPct, { color: style.text }]}>{pct}%</Text>
-                </View>
-              )}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
+        <View style={[styles.calendarCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.monthHeader}>
+            <TouchableOpacity onPress={prevMonth} style={[styles.navBtn, { backgroundColor: colors.background }]}>
+              <Ionicons name="chevron-back" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
-          );
-        })}
-      </View>
-
-      {selected && logs[selected] && (
-        <View style={styles.detailCard}>
-          <Text style={styles.detailTitle}>
-            📅 {new Date(selected + 'T00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </Text>
-          <View style={styles.detailGrid}>
-            <View style={[styles.detailStat, { backgroundColor: '#dcfce7', borderColor: '#bbf7d0' }]}>
-              <Text style={[styles.detailStatVal, { color: '#15803d' }]}>{logs[selected].completedCount || 0}</Text>
-              <Text style={[styles.detailStatLabel, { color: '#16a34a' }]}>Completed</Text>
-            </View>
-            <View style={[styles.detailStat, { backgroundColor: '#fee2e2', borderColor: '#fecaca' }]}>
-              <Text style={[styles.detailStatVal, { color: '#b91c1c' }]}>{(logs[selected].totalCount || 0) - (logs[selected].completedCount || 0)}</Text>
-              <Text style={[styles.detailStatLabel, { color: '#dc2626' }]}>Missed</Text>
-            </View>
-            <View style={[styles.detailStat, { backgroundColor: '#ede9fe', borderColor: '#ddd6fe' }]}>
-              <Text style={[styles.detailStatVal, { color: '#6d28d9' }]}>{logs[selected].pct || 0}%</Text>
-              <Text style={[styles.detailStatLabel, { color: '#7c3aed' }]}>Done</Text>
-            </View>
+            <Text style={[styles.monthTitle, { color: colors.text }]}>
+              {currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
+            </Text>
+            <TouchableOpacity onPress={nextMonth} style={[styles.navBtn, { backgroundColor: colors.background }]}>
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
           </View>
-          {logs[selected].mood && (
-            <View style={styles.detailMood}>
-              <Text style={styles.detailMoodLabel}>Recorded Mood</Text>
-              <Text style={styles.detailMoodEmoji}>{logs[selected].mood}</Text>
-            </View>
-          )}
-        </View>
-      )}
 
-      <View style={{ height: 20 }} />
-    </ScrollView>
+          <View style={styles.daysRow}>
+            {DOW.map(d => (
+              <Text key={d} style={[styles.dowText, { color: colors.textSecondary }]}>{d.substring(0, 3)}</Text>
+            ))}
+          </View>
+
+          <View style={styles.grid}>
+            {blanks.map(b => <View key={`b-${b}`} style={styles.dayBox} />)}
+            {days.map(d => {
+              const dateKey = `${monthKey}-${String(d).padStart(2, '0')}`;
+              const isToday = dateKey === todayStr;
+              const isSelected = dateKey === selectedDate;
+              
+              const log = logs[dateKey];
+              const pct = log?.pct || 0;
+              const mood = log?.mood || '';
+              
+              let bg = 'transparent';
+              let border = 'transparent';
+              let textCol = colors.textSecondary;
+              
+              if (pct >= 80) { bg = '#dcfce7'; border = '#22c55e'; textCol = '#15803d'; }
+              else if (pct >= 50) { bg = '#fef08a'; border = '#eab308'; textCol = '#a16207'; }
+              else if (pct > 0) { bg = '#fee2e2'; border = '#ef4444'; textCol = '#b91c1c'; }
+
+              return (
+                <TouchableOpacity 
+                  key={d} 
+                  style={[
+                    styles.dayBox, 
+                    { backgroundColor: bg, borderColor: border, borderWidth: pct > 0 ? 2 : 0, borderRadius: 12 },
+                    isToday && { borderColor: colors.primary, borderWidth: 3 },
+                    isSelected && { transform: [{ scale: 1.1 }], shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 5, elevation: 5, zIndex: 10 }
+                  ]}
+                  onPress={() => setSelectedDate(isSelected ? null : dateKey)}
+                >
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingHorizontal: 4, marginTop: 4 }}>
+                    <Text style={[styles.dayNumber, { color: isToday ? colors.primary : textCol }]}>{d}</Text>
+                    {mood ? <Text style={{ fontSize: 12 }}>{mood.substring(0, 2)}</Text> : null}
+                  </View>
+                  {pct > 0 && (
+                    <View style={{ width: '80%', height: 4, backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 2, marginTop: 'auto', marginBottom: 6 }}>
+                      <View style={{ width: `${pct}%`, height: '100%', backgroundColor: border, borderRadius: 2 }} />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {selectedDate && (
+          <View style={[styles.detailCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.detailDate, { color: colors.text }]}>
+              {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+            </Text>
+            
+            {selectedData ? (
+              <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16, gap: 8 }}>
+                  <View style={[styles.statBox, { backgroundColor: '#dcfce7', borderColor: '#bbf7d0' }]}>
+                    <Ionicons name="checkmark-circle" size={24} color="#22c55e" style={{marginBottom: 4}} />
+                    <Text style={[styles.statValue, { color: '#15803d' }]}>{selectedData.completedCount || 0}</Text>
+                    <Text style={[styles.statLabel, { color: '#166534' }]}>COMPLETED</Text>
+                  </View>
+                  <View style={[styles.statBox, { backgroundColor: '#fee2e2', borderColor: '#fecaca' }]}>
+                    <Ionicons name="close-circle" size={24} color="#ef4444" style={{marginBottom: 4}} />
+                    <Text style={[styles.statValue, { color: '#b91c1c' }]}>{(selectedData.totalCount || 0) - (selectedData.completedCount || 0)}</Text>
+                    <Text style={[styles.statLabel, { color: '#991b1b' }]}>MISSED</Text>
+                  </View>
+                  <View style={[styles.statBox, { backgroundColor: '#f3e8ff', borderColor: '#e9d5ff' }]}>
+                    <Ionicons name="analytics" size={24} color="#a855f7" style={{marginBottom: 4}} />
+                    <Text style={[styles.statValue, { color: '#7e22ce' }]}>{selectedData.pct || 0}%</Text>
+                    <Text style={[styles.statLabel, { color: '#6b21a8' }]}>DONE</Text>
+                  </View>
+                </View>
+
+                {selectedData.mood ? (
+                  <View style={{ alignItems: 'center', marginTop: 12 }}>
+                    <Text style={[styles.detailLabel, { color: colors.textSecondary, marginBottom: 8, fontSize: 12, letterSpacing: 1 }]}>RECORDED MOOD</Text>
+                    <Text style={{ fontSize: 44 }}>{selectedData.mood}</Text>
+                  </View>
+                ) : null}
+              </View>
+            ) : (
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No habits logged on this day.</Text>
+            )}
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
-  loadingText: { marginTop: 12, color: '#7c3aed', fontWeight: '600' },
-  container: { flex: 1, backgroundColor: '#ffffff' },
-  content: { padding: 20, paddingTop: 56 },
-  header: { marginBottom: 20 },
-  title: { fontSize: 26, fontWeight: '800', color: '#1e293b' },
-  subtitle: { fontSize: 14, color: '#64748b', marginTop: 4 },
-  monthNav: { flexDirection: 'row', gap: 8, marginTop: 14 },
-  navBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0' },
-  navBtnText: { fontSize: 13, color: '#475569', fontWeight: '600' },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 16, padding: 12, backgroundColor: '#f8fafc', borderRadius: 14, borderWidth: 1, borderColor: '#f1f5f9' },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  legendDot: { width: 14, height: 14, borderRadius: 4, borderWidth: 2 },
-  legendText: { fontSize: 12, fontWeight: '600', color: '#64748b' },
-  dowRow: { flexDirection: 'row', marginBottom: 6 },
-  dowCell: { flex: 1, alignItems: 'center', paddingVertical: 8 },
-  dowText: { fontSize: 11, fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 },
-  calendarGrid: { flexDirection: 'row', flexWrap: 'wrap' },
-  dayCell: { width: '14.28%', minHeight: 68, borderRadius: 12, padding: 6, marginBottom: 6, borderWidth: 1, borderColor: '#e2e8f0', backgroundColor: '#f8fafc' },
-  dayCellTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  dayNum: { fontSize: 13, fontWeight: '800', color: '#64748b' },
-  dayMood: { fontSize: 10, fontWeight: '700', color: '#94a3b8' },
-  dayProgress: { marginTop: 'auto' },
-  dayProgressBg: { height: 3, backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: 2, overflow: 'hidden' },
-  dayProgressFill: { height: '100%', borderRadius: 2 },
-  dayPct: { fontSize: 9, fontWeight: '800', marginTop: 2 },
-  detailCard: { backgroundColor: '#fff', borderRadius: 16, padding: 18, marginTop: 16, borderWidth: 1, borderColor: '#f1f5f9' },
-  detailTitle: { fontSize: 17, fontWeight: '700', color: '#1e293b', marginBottom: 14 },
-  detailGrid: { flexDirection: 'row', gap: 8 },
-  detailStat: { flex: 1, borderRadius: 14, padding: 14, alignItems: 'center', borderWidth: 1 },
-  detailStatVal: { fontSize: 26, fontWeight: '800' },
-  detailStatLabel: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 },
-  detailMood: { alignItems: 'center', marginTop: 16 },
-  detailMoodLabel: { fontSize: 11, fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
-  detailMoodEmoji: { fontSize: 14, fontWeight: 'bold' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { flex: 1 },
+  header: { padding: 20, paddingTop: 56, paddingBottom: 20 },
+  headerTitle: { fontSize: 26, fontWeight: '800' },
+  headerSub: { fontSize: 13, marginTop: 4 },
+  calendarCard: { borderRadius: 16, padding: 16, borderWidth: 1, marginBottom: 20 },
+  monthHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  monthTitle: { fontSize: 18, fontWeight: '700' },
+  navBtn: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
+  daysRow: { flexDirection: 'row', marginBottom: 12 },
+  dowText: { flex: 1, textAlign: 'center', fontSize: 12, fontWeight: '700', textTransform: 'uppercase' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap' },
+  dayBox: { width: '14.28%', height: 48, justifyContent: 'center', alignItems: 'center' },
+  dayNumber: { fontSize: 15, fontWeight: '600' },
+  dot: { width: 6, height: 6, borderRadius: 3, marginTop: 4 },
+  detailCard: { borderRadius: 16, padding: 20, borderWidth: 1 },
+  detailDate: { fontSize: 18, fontWeight: '700', marginBottom: 16 },
+  detailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12, borderRadius: 10, marginBottom: 8 },
+  detailLabel: { fontSize: 14, fontWeight: '700' },
+  detailValue: { fontSize: 15, fontWeight: '700' },
+  emptyText: { fontSize: 14, fontStyle: 'italic', marginTop: 10 },
+  statBox: { flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, alignItems: 'center' },
+  statValue: { fontSize: 22, fontWeight: '900', marginBottom: 2 },
+  statLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 0.5 }
 });
