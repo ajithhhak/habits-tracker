@@ -83,7 +83,7 @@ export default function Register() {
       style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #faf5ff 30%, #fdf2f8 60%, #fff1f2 100%)' }}>
       
       {/* Top Right Download Button */}
-      <a href="https://github.com/ajithhhak/habits-tracker/releases/download/v1.0.0/HabitSync.apk" className="absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold bg-white text-[#7c3aed] hover:scale-105 shadow-md transition-transform duration-200 border border-purple-100">
+      <a href="https://drive.usercontent.google.com/download?id=1ZncmnSuY13VDw-oudPxOIWQJXJ2F9Wb4&export=download&authuser=0&confirm=t&uuid=6dfdf0b6-371a-429f-abb8-72cbcfe4e225&at=ABswASZCBnDLQ_GFg0gADaYeGiYn%3A1782458876398" className="absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold bg-white text-[#7c3aed] hover:scale-105 shadow-md transition-transform duration-200 border border-purple-100">
         <Smartphone size={16} /> Download App
       </a>
 
