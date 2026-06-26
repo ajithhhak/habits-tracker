@@ -93,7 +93,7 @@ export default function Layout({ children, user, onUserUpdate }) {
 
         {/* Logout and Download */}
         <div className="p-4 mb-4">
-          <a href="/HabitSync.apk" download="HabitSync.apk" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+          <a href="https://github.com/ajithhhak/habits-tracker/releases/download/v1.0.0/HabitSync.apk" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
                        bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:opacity-90 w-full transition-all duration-200 mb-3 shadow-md justify-center">
             <Smartphone size={18} /> Download App
           </a>
