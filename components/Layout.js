@@ -26,42 +26,40 @@ export default function Layout({ children, user, onUserUpdate }) {
   return (
     <div className="flex h-screen overflow-hidden font-sans text-slate-800 transition-colors duration-300" style={{ background: '#f8f7ff' }}>
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-72
+      <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 flex flex-col shadow-xl
                          transform transition-transform duration-300 ease-out
                          md:relative md:translate-x-0
-                         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        style={{ background: 'linear-gradient(180deg, #7c3aed 0%, #6d28d9 40%, #5b21b6 100%)' }}>
+                         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Logo */}
-        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl
-                            flex items-center justify-center shadow-lg border border-white/20 overflow-hidden p-1">
-              <img src="/logo_main.png" alt="HabitSync" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 flex items-center justify-center p-1">
+              <img src="/logo_main.png" alt="HabitSync" className="w-full h-full object-contain mix-blend-multiply" />
             </div>
             <div>
-              <div className="font-extrabold text-xl tracking-tight text-white">HabitSync</div>
+              <div className="font-extrabold text-xl tracking-tight text-slate-800">HabitSync</div>
             </div>
           </div>
-          <button className="md:hidden text-white/60 hover:text-white transition-colors" onClick={() => setSidebarOpen(false)}>
+          <button className="md:hidden text-slate-400 hover:text-slate-600 transition-colors" onClick={() => setSidebarOpen(false)}>
             <X size={20} />
           </button>
         </div>
 
         {/* User mini-profile */}
         {user && (
-          <div className="p-4 mx-4 mt-6 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+          <div className="p-4 mx-4 mt-6 rounded-xl bg-slate-50 border border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden flex-shrink-0 bg-white/20">
+              <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden flex-shrink-0 bg-violet-100">
                 {user.avatar
                   ? <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                  : <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">
+                  : <div className="w-full h-full flex items-center justify-center text-violet-700 font-bold text-lg">
                     {user.name?.[0]?.toUpperCase()}
                   </div>
                 }
               </div>
               <div className="min-w-0">
-                <div className="font-semibold text-sm truncate text-white">{user.name}</div>
-                <div className="text-xs text-white/60 truncate">{user.email}</div>
+                <div className="font-semibold text-sm truncate text-slate-800">{user.name}</div>
+                <div className="text-xs text-slate-500 truncate">{user.email}</div>
               </div>
             </div>
           </div>
@@ -76,15 +74,15 @@ export default function Layout({ children, user, onUserUpdate }) {
                 {active && (
                   <motion.div
                     layoutId="activeNavIndicator"
-                    className="absolute inset-0 bg-white/20 backdrop-blur-sm rounded-xl border border-white/10"
+                    className="absolute inset-0 bg-violet-50 rounded-xl border border-violet-100"
                     initial={false}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                   />
                 )}
                 <div className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300
                               ${active
-                    ? 'text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'}`}>
+                    ? 'text-violet-700'
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}>
                   <Icon size={20} className={active ? 'stroke-[2.5px]' : 'stroke-2'} />
                   {label}
                 </div>
@@ -95,13 +93,13 @@ export default function Layout({ children, user, onUserUpdate }) {
 
         {/* Logout and Download */}
         <div className="p-4 mb-4">
-          <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
-                       bg-white text-[#7c3aed] hover:bg-white/90 w-full transition-all duration-200 mb-3 shadow-lg justify-center">
+          <a href="/HabitSync.apk" download="HabitSync.apk" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+                       bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:opacity-90 w-full transition-all duration-200 mb-3 shadow-md justify-center">
             <Smartphone size={18} /> Download App
           </a>
           <button onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold justify-center
-                       text-white/60 hover:text-white hover:bg-white/10 w-full transition-all duration-200">
+                       text-slate-500 hover:text-red-600 hover:bg-red-50 w-full transition-all duration-200">
             <LogOut size={20} /> Sign Out
           </button>
         </div>
