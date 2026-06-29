@@ -18,7 +18,17 @@ export default function Register() {
       .then(r => r.json())
       .then(d => setHealth(d))
       .catch(() => setHealth({ ok: false, error: 'API unreachable' }))
-  }, [])
+
+    // Check if already logged in and redirect to dashboard
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.user) {
+          router.replace('/dashboard')
+        }
+      })
+      .catch(() => {})
+  }, [router])
 
   function handleAvatarChange(e) {
     const file = e.target.files?.[0]

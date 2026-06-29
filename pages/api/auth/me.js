@@ -3,6 +3,7 @@ import User from '../../../models/User'
 import { getAuthUser } from '../../../lib/auth'
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store, max-age=0')
   try {
     const authUser = getAuthUser(req, res)
     if (!authUser) return res.status(401).json({ error: 'Unauthorized' })

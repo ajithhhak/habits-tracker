@@ -17,7 +17,17 @@ export default function Login() {
       .then(r => r.json())
       .then(d => setHealth(d))
       .catch(() => setHealth({ ok: false }))
-  }, [])
+
+    // Check if already logged in and redirect to dashboard
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.user) {
+          router.replace('/dashboard')
+        }
+      })
+      .catch(() => {})
+  }, [router])
 
   async function handleSubmit(e) {
     e.preventDefault()
